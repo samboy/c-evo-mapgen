@@ -164,6 +164,7 @@ THIS_FUNC(random_draw)
 
   uint32_t state;
   state = rgi(rg_mill,rg_belt,&rg_phase);
+  /*printf("%x\n",(U16)((state >> 16) & 0x7fff));*/
   return (U16)((state >> 16) & 0x7fff) ;
 }
 
