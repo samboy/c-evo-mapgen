@@ -34,7 +34,7 @@ function build_exit ()
 
 #==========  set some variables  ==============================================
 
-CC_OPTIONS="-Wall -Werror"
+CC_OPTIONS="-Wall"
 CC_PATHES="-I ../include -L ../lib"
 
 SCENARIOS=scn_*.c

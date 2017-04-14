@@ -85,9 +85,29 @@ Global objects:
 
 /*--  internal variables  -------------------------------------------------*/
 
-static U32 state ; /*internal memory*/
+/*static U32 state ;*/ /*internal memory*/
+static uint32_t rg_belt[39], rg_mill[19], rg_phase = 2;
 
+// GPLv3 note: This is *not* obfuscated. This is how I wrote this code
+// by hand.
 
+/* Tiny RadioGatun[32] implementation */
+#include <stdint.h> 
+#define rgp uint32_t
+#define rgf(a) for(c=0;c<a;c++)
+#define rgn w[c*13]^=s;u[16+c]^=s;
+/* This is the Belt + Mill */
+void rg(rgp*a,rgp*b){rgp m=19,A[19],x,o=13,c,y,r=0,q[3];rgf(12)b[c+
+c%3*o]^=a[c+1];rgf(3){for(q[c]=b[y=12+c*o];y>c*o;b[y+1]=b[y])y--;b[
+y]=q[c];}rgf(m){r=(c+r)&31;y=c*7;x=a[y++%m];x^=a[y%m]|~a[(y+1)%m];A
+[c]=x>>r|x<<(32-r);}rgf(m)a[c]=A[c]^A[(c+1)%m]^A[(c+4)%m];rgf(3)a[c
++o]^=q[c];*a^=1;}
+/* This converts a null-terminated string in to a rg32 state */
+void rgl(rgp*u,rgp*w,char*v){rgp s,q,c,x;rgf(39)w[c]=u[c%19]=0;for(
+;;rg(u,w)){rgf(3){for(s=q=0;q<4;){x=*v++;s|=(x?255&x:1)<<8*q++;if(!
+x){rgn;rgf(17)rg(u,w);return;}}rgn;}}}
+/* This generates a random 32-bit unsigned integer */
+rgp rgi(rgp*m,rgp*b,rgp*a){if(*a&2)rg(m,b);return m[*a^=3];}
 
 /*-----------   Library functions   ---------------------------------------*/
 
@@ -106,6 +126,7 @@ U16 random_init( BIT use_seed, U16 seed )
 THIS_FUNC(random_init)
   U16 effective_seed ;
   U8 i ; /*loop control*/
+  char seed_string[16];
 
   if (use_seed) {
     effective_seed = seed ;
@@ -113,10 +134,10 @@ THIS_FUNC(random_init)
   else {
     effective_seed = (U16)(time( NULL ) & 0xffff) ;
   }
-  DEB((stderr, "Seed value 0x%04x=%u\n",
-               (unsigned)effective_seed,
-               (unsigned)effective_seed))
-  state = (U32)effective_seed ; /*now seeding*/
+  sprintf(seed_string,"%d",effective_seed);
+  DEB((stderr, "Seed value %s\n",seed_string))
+  /*state = (U32)effective_seed ;*/ /*now seeding*/
+  rgl(rg_mill,rg_belt,seed_string); // Init rg32 RNG
 
      /*warm up random generator*/
   for ( i = 0 ; i < WARM_UP_CYCLES ; i++ ) {
@@ -126,20 +147,8 @@ THIS_FUNC(random_init)
 }
 
 /*-------------------->   random_draw   <------------------------ 2017-Mar-22
-This function returns a pseudo random unsigned integer in the
-range 0..RANDOM_MAX_RAND  (= 0..0x7fff)
-
-It is implemented as a Linear Congruential generator (LCG)
-a =   1103515245 = 3^5 * 5 * 7 * 129749
-a-1 = 1103515244 = 2^2 * 13^2 * 513 * 2663
-c = 12345 = 3 * 5 * 823
-m = 2^32
-  1. m and c are relatively prime
-  2. a-1 is divisible by all prime factors of m
-  3. a-1 is divisible by 4
-  => Hull-Dobell Theorem fullfilled, i. e. maximum period length
-     for all seed values
-returned bits: 30-16
+This function uses RadioGatun[32], which does not have the issues
+a LCG has
 -----------------------------------------------------------------------------
 Used functions: --
 Globals/Internals: state
@@ -152,13 +161,9 @@ U16 random_draw( void )
 THIS_FUNC(random_draw)
 
      /*parameters similar to ISO/IEC 9899*/
-  state = state * 1103515245 + 12345 ; /*implicit modulo 2^32*/
 
-     /*parameters according to ISO/IEC 9899*/
-  /*state = (state * 1103515245 + 12345) & 0x7fffffff ;*/ /*m=2^31*/
-  /*Note: m=2^32 yields exactly the same sequence as m=2^31*/
-  /*      (not in the state variable, but in the returned value)*/
-
+  uint32_t state;
+  state = rgi(rg_mill,rg_belt,&rg_phase);
   return (U16)((state >> 16) & 0x7fff) ;
 }
 
