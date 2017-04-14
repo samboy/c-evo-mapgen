@@ -1,0 +1,42 @@
+#!/bin/bash
+###############################################################################
+#   This file is part of map_gen, an external random map generator for C-Evo
+#   Copyright (C) 2017  Ulrich Krueger
+#
+#   Map_gen is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   Map_gen is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with map_gen.  If not, see <http://www.gnu.org/licenses/>.
+#
+###############################################################################
+# remove all compiled and otherwise generated files                 2017-Mar-22
+# from the src tree
+#==============================================================================
+
+rm -f bin/map_gen
+rm -f bin/map_gen.exe
+rm -f cpp/cpp
+rm -f cpp/cpp.exe
+
+rm -f lib/lib_misc.a
+rm -f lib/lib_scan.a
+rm -f lib/*.o
+rm -f lib/scan_lib/*.o
+
+rm -f cevo_lib/lib_cevo.a
+rm -f cevo_lib/*.o
+
+rm -f map_gen/map_gen
+rm -f map_gen/bin/map_gen
+rm -f map_gen/map_gen.exe
+rm -f map_gen/bin/map_gen.exe
+rm -f map_gen/*.i
+rm -f map_gen/ri/*.i

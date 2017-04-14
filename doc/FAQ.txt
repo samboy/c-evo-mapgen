@@ -1,0 +1,159 @@
+FAQ.txt                                                            2017-Apr-05
+==============================================================================
+
+Questions you might ask about map_gen:
+--------------------------------------
+
+Q:
+The program doesn't start.  I double-click it in the Explorer, but
+nothing happens.
+
+A:
+Map_gen is a console application, not a Windows program.
+Run it from a console (DOS box).
+
+
+Q:
+The program aborts immediately with the error message:
+"map_gen: cannot find map_gen.ini"
+
+A:
+Map_gen looks for its configuration file "map_gen.ini" in the
+current working directory.  This is usually the directory from
+which you start map_gen.  Put "map_gen.ini" in the same directory
+as "map_gen.exe".
+
+
+Q:
+Why does map generation take such a long time?  Several minutes in some cases!
+C-Evo's internal generator needs less than a second.
+
+A:
+I never optimized map_gen for speed.
+Unlike C-Evo's internal generator, map_gen has to check a lot of conditions
+for each tile it places, like the mutual distance of objects.  The algorithms
+are implemented straightforward, some scale very poor, with O(map_size^3).
+A lot could be improved, but frankly, I never felt the need to do it.
+Reason: An average game takes me about 20 hours to play, so a few minutes of
+map generation seems neglectable to me.
+
+Moreover, straightforward algorithms tend to be less error-prone than
+complicated ones (at least when *I* do the programming).
+I always favored reliability over speed.
+
+Maybe I'll improve speed in the future, but I cannot promise anything.
+
+
+Q:
+The program doesn't create a map file.  It terminates with the error
+message:
+Map generation aborted.  See "map_gen.log" for details.
+
+A:
+There are many different causes for that.
+Most likely you have set some parameters to improper values.
+For instance, you cannot have a map of size 35% for 15 players where the
+player's start positions shall have a mutual distance of 20 tiles -- they
+simply do not fit on that map.
+
+Map_gen creates a log file ("map_gen.log") even if map generation failed.
+It is a text file so you can open it with any text editor.
+The last few lines might give you a clue what went wrong.
+
+
+Q:
+I don't understand the log file entries.
+
+A:
+Well, yes ... I see.
+Most of the entries remained from the debugging process.
+I decided to keep them because they give a quick overview what went wrong
+in case of a failure.  Don't worry, just concentrate on the last 3..4 lines,
+there should be an error message if map generation failed.
+I tried my best to make these error messages as clear as possible.
+
+
+Q:
+All my parameters are ok, but map generation failed anyway.
+
+A:
+Map generation is a random process.
+There is a certain risk that something happens which I have not foreseen,
+or something which I *have* foreseen but was unable to avoid.
+An example for the latter:
+Suppose you have selected the 'Navigation_required' map_type,
+and you want to create four big islands.
+The process is a follows: The islands are created one after the other,
+and after each creation of an island all tiles in a distance of
+"big_island_dist" around the island are marked to prevent the generation
+of another island there.
+Now suppose that --- by pure chance --- the first three islands form
+a triangle, in a way leaving just a few unmarked tiles in the middle.
+The start position for the fourth island is chosen randomly from all unmarked
+tiles on the map.
+Now suppose it happens --- pure chance again --- that the fourth island
+starts on one of these unmarked tiles in the middle.  The island tries
+to grow, but must fail because it runs out of unmarked tiles before it
+reaches its minimum size.  Map generation will fail in that case.
+
+If that (or something similar) happens to you, simply try again.
+Since we have a random process, it is very unlikely that map generation
+fails two times in a row, at least with the default parameters.
+In the test suite that was performed before release, the 'pass' criterion for
+each scenario (with standard parameters) is 100 successful map generations
+in a row.  That means: As long as you use the standard parameters, a failure
+is very unlikely, though not impossible.
+Map_gen gives you the freedom to adjust the parameters to the limits of the
+scenarios (and beyond), at the cost of an increased risk for failure.
+Feel free to experiment!
+
+If map generation continues to fail with other parameters
+than the default ones, consider modifying them.
+If you think your parameters are ok but map generation fails anyway,
+please contact me.
+
+
+Q:
+I want to report a bug.  Why do I have to send the log file and the ini file,
+but not the map file?
+
+A:
+Line 3 or 4 of the log file contains the seed value for the random number
+generator that map_gen uses.  I need that value to let map_gen repeat 
+all the steps that lead to the bug.
+I do not need the map file because I can easily create it myself if I have the
+seed value and the ini file (see also "map_gen --help").
+
+
+Q:
+What is that 'signature' in line 2 or 3 of the log file?
+
+A:
+That is a checksum of the configuration file "map_gen.ini" that was used
+when the log file was generated.
+Different contents of the configuration file result in different checksums.
+If I have a couple of log files and a couple of configuration files,
+I can assure I did not mix them up, i. e. I can trace which configuration
+file created which log file.
+
+
+Q:
+When I load a generated map into C-Evo 1.2.0, a wrong map size is displayed.
+
+A:
+Don't worry, the map size of the generated map is correct.  It will be loaded
+by C-Evo 1.2.0 without any problems.  What C-Evo 1.2.0 displays (and calls
+'map size') is actually the number of fertile (?) tiles on the map, expressed
+as a percentage value and related to 1112 tiles (1112 tiles is said to be the
+average number of land tiles on a size 100% / land mass 30% standard map).
+The map size that map_gen generates is always according to the following
+table and in compliance with C-Evo's built-in map generator.
+
+Size      Total # of tiles
+---------------------------
+ 35%      30 x 46 = 1380
+ 50%      40 x 52 = 2080
+ 70%      50 x 60 = 3000
+100%      60 x 70 = 4200
+150%      75 x 82 = 6150
+230%     100 x 96 = 9600

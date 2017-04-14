@@ -1,0 +1,66 @@
+#!/bin/bash
+###############################################################################
+#   This file is part of map_gen, an external random map generator for C-Evo
+#   Copyright (C) 2017  Ulrich Krueger
+#
+#   Map_gen is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   Map_gen is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with map_gen.  If not, see <http://www.gnu.org/licenses/>.
+#
+###############################################################################
+# build  lib_scan.a library                                         2017-Feb-27
+#==============================================================================
+
+#==========  function definitions  ============================================
+
+#------------------------------------------------------------------------------
+   # Does a cleanup (if necessary) and exits; param $1 is the exit code
+function build_exit ()
+{
+  rm -f *.o
+  exit $1
+}
+
+
+#==========  start of program flow  ===========================================
+
+#==========  set some variables  ==============================================
+
+LIB_FILE=lib_scan.a
+
+CC_WARNING="-Wall -Werror"
+
+CC_OPTIONS="${CC_WARNINGS} -c"
+
+CC_PATHES="-I ../../include"
+
+CC_CMD="cc ${CC_OPTIONS} ${CC_PATHES}"
+LIB_CMD="ar -rs"
+
+
+#==========  compile modules  =================================================
+
+${CC_CMD} scanm.c || build_exit 1
+${CC_CMD} scan.c || build_exit 1
+${CC_CMD} readsect.c || build_exit 1
+
+
+#==========  build library  ===================================================
+
+${LIB_CMD} ${LIB_FILE} *.o || build_exit 2
+rm -f ../${LIB_FILE}
+mv ${LIB_FILE} ..
+
+
+#==============================================================================
+echo library ${LIB_FILE} built successfully
+build_exit 0

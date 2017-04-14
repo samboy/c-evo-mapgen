@@ -1,0 +1,31 @@
+whats_new_in_1.1.0.txt                                             2017-Apr-10
+==============================================================================
+Changes from map_gen 1.0 -> 1.1.0
+
+There is not much to report from the user's point of view.
+The main focus of 1.1.0 was on the Linux port and making the sources available.
+The scenarios and their parameter sets have not changed substantially.
+
+
+- The version number now complies to the standard <major>.<minor>.<patchlevel>.
+  That's why the new version is 1.1.0 and not 1.1
+
+- Sources are now included, this version is under GPL
+
+- Development has been ported to Linux.  Map_gen runs now natively under Linux.
+  A Windows executable is still included, of course.
+
+- Some rare occuring bugs have been fixed
+
+- Two new scenarios: "Volcano Islands" and "Desert".  In fact, they are
+  not really new; they were already present in version 1.0, but I didn't
+  mention them because they were not sufficiently tested at that time.
+
+- The log file is no longer overwritten by default with every new run;
+  it is appended to an existing log file instead.
+  This is to avoid an inadvertent loss of a previous log file.
+  Anyway, there is a new command line option '-a' to return to the version 1.0
+  behaviour (overwriting the log file).
+
+- More parametrization examples have been added, see map_gen-1.1.0\examples.
+  I hope these examples help you to do your own parametrizations.

@@ -1,0 +1,89 @@
+The history of map_gen
+======================
+
+It all started in february 2006 when I had played a lot of games
+on standard maps but never really needed to build a strong fleet
+to win.  All I needed were some robust transport ships, just to hop to
+the next continent.  Sometimes I didn't use ships at all, instead I used
+transport planes.  I wondered how it would feel to play a game where
+a strong fleet was  *essential*  to win the game.
+
+Such a game would happen on a map where all players would start on
+separate continents (resp. islands), with a distance between them so
+large that even transport planes with five fuels could not return to
+one's cities.  But standard maps never looked like that.
+
+OK, C-Evo has a built-in editor, so I made a map like this and played it
+but was a little disappointed because I remembered the map I made,
+so I knew exactly where the other island were and hence I knew in
+which directions I should send my ships.
+What I missed was the thrill that you feel when you start a new game and
+see nothing but a few tiles.
+
+That was the birth of map_gen, which had only one scenario at that time:
+'Navigation required'
+
+
+Some milestones:
+----------------
+2007-May: Added 'Micronesia' scenario.  The idea was to still have
+    a waterworld but to allow earlier contact so the human player
+    could not be sure to be safe from attacks in early game.
+
+2008-Mar: Added 'Mountains' scenario.  I like scenarios with limited resources.
+    Moreover, 'Mountains' puts the human player in a disadvantage situation
+    since he/she starts in a valley far from the other players.
+
+    This was the first scenario with rivers.  It turned out to be quite
+    complicated to make rivers run in a natural looking way.  I now use an
+    elevation model in which each water tile is on sea level and land tiles
+    are on higher levels.
+    This is combined with a rain/erosion model.  Rain is falling down on land
+    tiles and flowing down to adjacent tiles of lower elevation until it hits
+    a water tile.  Each tile's elevation is lowered according to the quantity
+    of water flowing thru the tile.  Surrounding tiles are lowered a bit, too.
+    This attracts water from nearby tiles, so nearby rivers tend to merge
+    together.  Several rain/flow/erosion cycles are performed to create the
+    final river beds.
+
+2008-Jul: Added 'Hard Fight' scenario.  I wanted a map where I *need* the
+    strong units which are available in late game.  But on standard maps as
+    well as on my previous scenarios, games were finished long before I really
+    needed a defender with 945 defense value or a 2xxx-Missile Launcher.  When
+    playing 'Hard Fight', you will need these.
+
+2009-Jan: Implemented ini file mechanism.  Before that, each parameter change
+    (and even a scenario switch) required a recompilation of map_gen.
+
+    Also added the 'Arctic' scenario.  Not only starts the human player in a
+    place with limited potential for growing his/her capitol, the surrounding
+    tiles are hostile terrain, to make the situation even harder (when I
+    designed 'Arctic', engineers were vulnerable by hostile terrain).  The only
+    way out was by ship or by plane (or building a lot of military bases ;-).
+
+2010-Jun: First thought of making map_gen public domain one day.  Wrote my own
+    random number generator (RNG) to have full control of the random number
+    sequence.  Meaning was to get rid of DLL dependencies.  RNG algorithms in
+    DLLs on other computers could easily generate a different sequence for the
+    same seed, which would make it impossible to reproduce problems which might
+    occur on someone else's computer.
+
+2012-Feb: Added 'Big River' scenario.  Started as a 1:1 scenario, with one
+    player on each side of the river.  Big land mass for both players.  To
+    attack, one must build transport ships (or planes).  Topologically similar
+    to 'Navigation required', but with more land mass.  You can think of the
+    north and south side as of two islands.
+
+2012-Jun: Added 'Great Plains' scenario.  A scenario made for fast and strong
+    attackers (horsemen, dragoons, cavalry): No heavy terrain => Attackers do
+    not waste their movement points, and defenders get no terrain bonus.
+
+2013-Apr: Used an automatic testing environment to generate a lot of maps.
+    Found and eliminated some rare-occuring bugs.
+
+2016-Jul: Release of version 1.0
+
+2017-Apr: Release of version 1.1.0 (Linux port, licensed under GPL)
+
+
+Ulrich Krueger

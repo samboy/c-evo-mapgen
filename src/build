@@ -1,0 +1,71 @@
+#!/bin/bash
+###############################################################################
+#   This file is part of map_gen, an external random map generator for C-Evo
+#   Copyright (C) 2017  Ulrich Krueger
+#
+#   Map_gen is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   Map_gen is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with map_gen.  If not, see <http://www.gnu.org/licenses/>.
+#
+###############################################################################
+# build  map_gen and all libs                                       2017-Mar-28
+#==============================================================================
+
+#==========  function definitions  ============================================
+
+#------------------------------------------------------------------------------
+   # Does a cleanup (if necessary) and exits; param $1 is the exit code
+function build_exit ()
+{
+  exit $1
+}
+
+
+#==========  start of program flow  ===========================================
+
+#==========  set some variables  ==============================================
+
+# none currently
+
+
+#==========  call all the other build scripts in proper order  ================
+
+cd lib
+./build_lib || build_exit 1
+cd ..
+
+cd lib/scan_lib
+./build_lib || build_exit 1
+cd ../..
+
+cd cpp
+./build || build_exit 1
+cd ..
+
+cd map_gen/ri
+./build_ri || build_exit 1
+cd ../..
+
+cd cevo_lib
+./build_lib || build_exit 1
+cd ..
+
+cd map_gen
+./build || build_exit 1
+cd ..
+
+   # move executable to target dir
+mv -f map_gen/map_gen bin || build_exit 2
+
+#==============================================================================
+echo "done successfully, map_gen executable has been moved into src/bin"
+build_exit 0

@@ -1,0 +1,31 @@
+known_bugs.txt                                                     2017-Apr-10
+==============================================================================
+
+- In the 'Mountains' scenario, the human player's starting valley has always
+  two grassland tiles, never plains.  This is in contradiction to my own
+  design rules (standard distribution of bonus resources and
+  grasslands/plains).
+  Anyway, without this bug the city might not be able to grow above size 5
+  in early game.  With the bug, it is size 6.  Since the resources of the
+  human player's starting city are already quite limited, I decided to
+  leave the bug as it is for version 1.1.0.
+  Easy to fix.
+
+
+- The random number generator is reproducible across machines when suppling
+  raw integer numbers, but not when supplying a specified range.  The reason
+  is most likely double to integer conversion, which is obviously different
+  on different hardware.
+
+  I discovered this bug when I ran one of my testsuites.  It is a
+  reproducability test where I generate maps with defined seeds across
+  operating systems and machines and check for bitwise identity against
+  reference maps.
+  Hard to fix.  How do you control double to integer conversion?
+  I'll have to re-design the function to use integer arithmetic only.
+
+
+- On small maps of 'Hard fight' occur segmentation faults.  I discovered
+  that after the code freeze for 1.1.0.  Since I believe no one will play
+  Hard fight on small maps, I don't consider that to be a show stopper.
+  Will be investigated before the next release.
