@@ -46,7 +46,7 @@ LIBS="../cevo_lib/lib_cevo.a -lm -l_scan -l_misc"
 
 #==========  compile the program  =============================================
 
-cc ${CC_OPTIONS} ${CC_PATHES} ${FILES} ${LIBS} -o map_gen || build_exit 1
+gcc -Os ${CC_OPTIONS} ${CC_PATHES} ${FILES} ${LIBS} -o map_gen || build_exit 1
 
 
 #=============================================================================

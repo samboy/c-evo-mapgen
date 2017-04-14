@@ -156,7 +156,8 @@ static FILE_SYS_FILEINFO* find_file( char* filename, FILE_SYS_FILEINFO* dest,
   static void findtype2fileinfo( FILE_SYS_FILEINFO* dest,
                                  struct _finddata_t* src ) ;
 #elif __GNUC__
-  /*left blank, not needed under Unix*/
+  static void findtype2fileinfo( FILE_SYS_FILEINFO* dest,
+                                 struct _finddata_t* src ) ;
 
 #else
 #  error  file_sys.c: no compiler specified (prototypes)
@@ -207,6 +208,11 @@ static char remember_dir [ DIR_NESTING ] [ FILE_SYS_MAX_PATH ] ;
   static struct _finddata_t find_result_temp ;
 
 #elif __GNUC__
+  static int handle [ DIR_NESTING ] ;
+  static int handle_temp ;
+  static int findnext_status ;
+  static struct _finddata_t find_result [ DIR_NESTING ] ;
+  static struct _finddata_t find_result_temp ;
   static DIR* dirp [ DIR_NESTING ] ;
   static struct dirent* dir_entry ;
 
@@ -555,7 +561,7 @@ THIS_FUNC(file_sys_get_fileinfo)
     return find_file( filename, ret_val, flags ) ;
   }
 
-# elif __TINYC__
+# else
   if ((flags & FILE_SYS_IGNORE_CASE) == 0) {
     handle_temp = _findfirst( filename, & find_result_temp ) ;
     if (handle_temp == -1) { /*no match found*/
@@ -569,8 +575,6 @@ THIS_FUNC(file_sys_get_fileinfo)
     return find_file( filename, ret_val, flags ) ;
   }
 
-# else
-#  error  file_sys.c, DOS/Windows: no compiler specified (stat/find_first)
 # endif
 
 #endif /*unix/DOS*/
@@ -1226,7 +1230,7 @@ THIS_FUNC(findtype2fileinfo)
   dest->mod_time = mktime( & temp ) ;
 }
 
-#elif __TINYC__
+#else
 static void findtype2fileinfo( FILE_SYS_FILEINFO* dest,
                                struct _finddata_t* src )
 {
@@ -1248,11 +1252,6 @@ THIS_FUNC(findtype2fileinfo)
   dest->mod_time_sec =   (U8)( temp_p->tm_sec) ;
 }
 
-#elif __GNUC__
-  /*left blank, not needed under Unix*/
-
-#else
-#  error  file_sys.c: no compiler specified (conversion)
 #endif
 
 /*-------------------->   x   <---------------------------------- 2016-Jul-22

@@ -95,7 +95,7 @@ Parameters:     - argc_poi, argv_poi
 Return value:   TRUE if error, else FALSE
 Exitcode:       --
 ---------------------------------------------------------------------------*/
-BIT getopts( int* argc_poi, char*** argv_poi, struct optdef* definition_list)
+int getopts( int* argc_poi, char*** argv_poi, struct optdef* definition_list)
 {
 THIS_FUNC(get_opts)
   struct optdef* p = definition_list ;
