@@ -70,7 +70,7 @@ cd map_gen
 cd ..
 
    # move executable to target dir
-mv -f map_gen/map_gen bin || build_exit 2
+mv -f map_gen/map_gen.exe bin || build_exit 2
 
 #==============================================================================
 echo "done successfully, map_gen executable has been moved into src/bin"
