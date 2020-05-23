@@ -263,6 +263,7 @@ THIS_FUNC(main)
   fprintf( log_fp, "map_type_name = %s\n", map_type_name ) ;
   fprintf( log_fp, "map_size = %u\n", (unsigned)map_size ) ;
 
+  /* NOTE: LX and LY can be changed by map_x and map_y */
   switch ( map_size ) {
   case 35: /*1380 tiles = 33%*/
      LX = 30 ;
@@ -306,9 +307,12 @@ THIS_FUNC(main)
     exit ( EXITCODE_WRONG_PARAM ) ;
   }
 
+  /* While map_size must be set, we can set the actual size by hand */
+  if(map_x > 22) { LX = map_x; }
+  if(map_y > 35) { LY = map_y; }
+
      /*allocate & initialize map*/
   cevo_lib_init() ;
-
 
   /*PRT_VAR((unsigned)comp_opponents,u)*/
   fprintf( log_fp, "comp_opponents = %u\n", (unsigned)comp_opponents ) ;
