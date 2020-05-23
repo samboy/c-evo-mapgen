@@ -14,6 +14,16 @@ GPL compliance notes:
 
 As per the GPL: I, Sam Trenholme, have modified the source code.
 
+# Building this
+
+To build this:
+
+* Get an ancient version of mingw and msys
+* Using GCC 3.2.3 from 2003, enter the `src/` directory
+* Type in `./build`
+* The binary will build
+* The binary does not build in modern versions of Cygwin
+
 # Original readme
 
 Welcome to "map_gen" version 1.1.0, an external map generator

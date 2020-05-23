@@ -13,6 +13,8 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with map_gen.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  This file has been changed by Sam Trenholme 2020
  */
 /********************************************************** Ulrich Krueger **
 random.c
@@ -97,11 +99,18 @@ static uint32_t rg_belt[39], rg_mill[19], rg_phase = 2;
 #define rgf(a) for(c=0;c<a;c++)
 #define rgn w[c*13]^=s;u[16+c]^=s;
 /* This is the Belt + Mill */
-void rg(rgp*a,rgp*b){rgp m=19,A[19],x,o=13,c,y,r=0,q[3];rgf(12)b[c+
-c%3*o]^=a[c+1];rgf(3){for(q[c]=b[y=12+c*o];y>c*o;b[y+1]=b[y])y--;b[
-y]=q[c];}rgf(m){r=(c+r)&31;y=c*7;x=a[y++%m];x^=a[y%m]|~a[(y+1)%m];A
-[c]=x>>r|x<<(32-r);}rgf(m)a[c]=A[c]^A[(c+1)%m]^A[(c+4)%m];rgf(3)a[c
-+o]^=q[c];*a^=1;}
+void rg(rgp*a,rgp*b){
+	rgp m=19,A[19],x,o=13,c,y,r=0,q[3];
+	rgf(12)b[c+c%3*o]^=a[c+1];
+	rgf(3){for(q[c]=b[y=12+c*o];y>c*o;b[y+1]=b[y])y--;b[y]=q[c];}
+	rgf(m){
+		r=(c+r)&31;y=c*7;x=a[y++%m];x^=a[y%m]|~a[(y+1)%m];
+		A[c]=x>>(r%32)|x<<((32-r)%32);
+	}
+	rgf(m)a[c]=A[c]^A[(c+1)%m]^A[(c+4)%m];
+	rgf(3)a[c+o]^=q[c];
+	*a^=1;
+}
 /* This converts a null-terminated string in to a rg32 state */
 void rgl(rgp*u,rgp*w,char*v){rgp s,q,c,x;rgf(39)w[c]=u[c%19]=0;for(
 ;;rg(u,w)){rgf(3){for(s=q=0;q<4;){x=*v++;s|=(x?255&x:1)<<8*q++;if(!
@@ -121,18 +130,18 @@ Parameters:	- seed: U16 seed value
 Return value:	The effective seed value
 Exitcode:	--
 ---------------------------------------------------------------------------*/
-U16 random_init( BIT use_seed, U16 seed )
+unsigned int random_init( BIT use_seed, unsigned int seed )
 {
 THIS_FUNC(random_init)
-  U16 effective_seed ;
+  unsigned int effective_seed ;
   U8 i ; /*loop control*/
-  char seed_string[16];
+  char seed_string[24];
 
   if (use_seed) {
     effective_seed = seed ;
   }
   else {
-    effective_seed = (U16)(time( NULL ) & 0xffff) ;
+    effective_seed = time( NULL ) & 0xfffffff ;
   }
   sprintf(seed_string,"%d",effective_seed);
   DEB((stderr, "Seed value %s\n",seed_string))

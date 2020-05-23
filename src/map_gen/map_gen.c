@@ -197,7 +197,7 @@ Exitcode:	x
 int main( int argc, char** argv )
 {
 THIS_FUNC(main)
-  U16 seed ;
+  unsigned int seed ;
   U8 i ; /*loop control*/
 
 
@@ -244,7 +244,7 @@ THIS_FUNC(main)
                 (long)read_ini_checksum( ini_file_arg, VERSION_CNT )) ;
 
      /*init random generator*/
-  seed = random_init( flag_count, (U16)count ) ;
+  seed = random_init( flag_count, count ) ;
   fprintf( log_fp, "Seed value 0x%04x=%u\n", (unsigned)seed, (unsigned)seed) ;
 
   fprintf( log_fp,
