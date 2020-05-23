@@ -662,7 +662,7 @@ Caveat:
 OCEAN to COAST conversion must be done before calling this function!
 -----------------------------------------------------------------------------
 Used functions:
-Parameters:	none
+Parameters:	none (uses global map_resources value)
 Return value:	void
 Exitcode:	--
 ---------------------------------------------------------------------------*/
@@ -716,26 +716,30 @@ static U16 plains_offsets [] = {
   line = 0 ;
   col_offset = 0 ;
   while (line < LY) {
-    col = col_offset ;
-    while (col < LX) {
+    if(map_resources == 0) { col = col_offset ; } else { col = 0; }
+      while (col < LX) {
       tile_index = line * LX + col ;
       tile = world [ tile_index ] ;
-      switch (tile & BASIC_TILE_TYPE_MASK) {
-      case PRAIRIE:
-      case DESERT:
-      case SWAMP:
-      case TUNDRA:
-      case ARCTIC:
-      case FOREST:
-      case HILLS:
-      case MOUNTAINS:
-        world [ tile_index ] = tile | BONUS_RESOURCE_1_MASK ;
-        break ;
+      if(map_resources == 0 || ((random_draw_range( 1,100 ) < map_resources)
+	&& (tile & BONUS_RESOURCE_1_MASK) == 0  
+        && (tile & BONUS_RESOURCE_2_MASK) == 0)) {
+        switch (tile & BASIC_TILE_TYPE_MASK) {
+          case PRAIRIE:
+          case DESERT:
+          case SWAMP:
+          case TUNDRA:
+          case ARCTIC:
+          case FOREST:
+          case HILLS:
+          case MOUNTAINS:
+              world [ tile_index ] = tile | BONUS_RESOURCE_1_MASK ;
+              break ;
 
-      default:
-        break ;
+          default:
+              break ;
+        }
       }
-      col += 10 ;
+      if(map_resources == 0) { col += 10 ; } else { col += 1 ; }
     }
     /*end column, next line*/
     if (*program_p == 0) { /*end of program*/
@@ -750,29 +754,33 @@ static U16 plains_offsets [] = {
   line = 2 ;
   col_offset = 8 ;
   while (line < LY) {
-    col = col_offset ;
+    if(map_resources == 0) { col = col_offset ; } else { col = 0; }
     while (col < LX) {
       tile_index = line * LX + col ;
       tile = world [ tile_index ] ;
-      switch (tile & BASIC_TILE_TYPE_MASK) {
-      case PRAIRIE:
-      case DESERT:
-      case SWAMP:
-      case TUNDRA:
-      case FOREST:
-      case HILLS:
-      case MOUNTAINS:
-        world [ tile_index ] = tile | BONUS_RESOURCE_2_MASK ;
-        break ;
+      if(map_resources == 0 || ((random_draw_range( 1,100 ) < map_resources)
+	&& (tile & BONUS_RESOURCE_1_MASK) == 0  
+        && (tile & BONUS_RESOURCE_2_MASK) == 0)) {
+          switch (tile & BASIC_TILE_TYPE_MASK) {
+          case PRAIRIE:
+          case DESERT:
+          case SWAMP:
+          case TUNDRA:
+          case FOREST:
+          case HILLS:
+          case MOUNTAINS:
+            world [ tile_index ] = tile | BONUS_RESOURCE_2_MASK ;
+            break ;
 
-      case ARCTIC:
-        world [ tile_index ] = tile | BONUS_RESOURCE_1_MASK ;
-        break ;
+          case ARCTIC:
+            world [ tile_index ] = tile | BONUS_RESOURCE_1_MASK ;
+            break ;
 
-      default:
-        break ;
+          default:
+            break ;
+        }
       }
-      col += 10 ;
+      if(map_resources == 0) { col += 10 ; } else { col += 1 ; }
     }
     /*end column, next line*/
     if (*program_p == 0) {
