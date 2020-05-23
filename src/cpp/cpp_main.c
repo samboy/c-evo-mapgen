@@ -40,7 +40,8 @@ Global objects:
 #include <stdio.h>
 #include <string.h>
 #include <openfile.h>
-/*#include <stdlib.h>*/
+#include <stdlib.h>
+#include <getopt.h>
 #include <getopts.h>
 
 #include "cpp_getc.h"

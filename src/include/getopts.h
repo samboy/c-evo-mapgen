@@ -42,8 +42,8 @@ struct optdef {
 	char **optarg ;
 } ;
 
-/*int getopts( int optc, char** optv, struct optdef *defi_list ) ;*/
-BIT getopts( int* optc, char*** optv, struct optdef* defi_list ) ;
+int getopts( int* optc, char*** optv, struct optdef *defi_list ) ;
+/*BIT getopts( int* optc, char*** optv, struct optdef* defi_list ) ;*/
 void fprint_argv( FILE* fp, int argc, char** argv ) ;
 
 #define OPTION_LIST(list_name) static struct optdef list_name [] = {

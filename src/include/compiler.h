@@ -86,13 +86,14 @@ History: (latest change first)
    /*typedef             int S32 ;*/
    /*typedef    unsigned int U32 ;*/
 
+#include <stdint.h>
       /*gcc nicely does the job for us*/
-   typedef     __INT8_TYPE__ S8 ;
-   typedef    __UINT8_TYPE__ U8 ;
-   typedef    __INT16_TYPE__ S16 ;
-   typedef   __UINT16_TYPE__ U16 ;
-   typedef    __INT32_TYPE__ S32 ;
-   typedef   __UINT32_TYPE__ U32 ;
+   typedef     int8_t S8 ;
+   typedef     uint8_t U8 ;
+   typedef     int16_t S16 ;
+   typedef     uint16_t U16 ;
+   typedef     int32_t S32 ;
+   typedef     uint32_t U32 ;
    /*typedef  __INT64_TYPE__ S64 ;*/ /*conflict with my old 64-bit lib*/
    /*typedef __UINT64_TYPE__ U64 ;*/
 

@@ -26,7 +26,7 @@
    # Does a cleanup (if necessary) and exits; param $1 is the exit code
 function build_exit ()
 {
-  exit $1
+	echo Warning: This build did not return 0 status
 }
 
 
@@ -39,26 +39,32 @@ function build_exit ()
 
 #==========  call all the other build scripts in proper order  ================
 
+echo lib
 cd lib
 ./build_lib || build_exit 1
 cd ..
 
+echo lib/scan_lib
 cd lib/scan_lib
 ./build_lib || build_exit 1
 cd ../..
 
+echo cpp
 cd cpp
 ./build || build_exit 1
 cd ..
 
+echo map_gen/ri
 cd map_gen/ri
 ./build_ri || build_exit 1
 cd ../..
 
+echo cevo_lib
 cd cevo_lib
 ./build_lib || build_exit 1
 cd ..
 
+echo map_gen
 cd map_gen
 ./build || build_exit 1
 cd ..

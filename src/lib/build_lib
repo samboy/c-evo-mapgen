@@ -38,13 +38,13 @@ function build_exit ()
 
 LIB_FILE=lib_misc.a
 
-CC_WARNINGS="-Wall -Werror"
+CC_WARNINGS="-Wall"
 
 CC_OPTIONS=${CC_WARNINGS}
 
 CC_PATHES="-I ../include"
 
-CC_CMD="cc ${CC_OPTIONS} ${CC_PATHES} -c"
+CC_CMD="gcc -Os ${CC_OPTIONS} ${CC_PATHES} -c"
 LIB_CMD="ar -rs"
 
 
