@@ -14,6 +14,18 @@ GPL compliance notes:
 
 As per the GPL: I, Sam Trenholme, have modified the source code.
 
+# map_x and map_y
+
+I have added the variables `map_x` and `map_y` which allow the map size
+to be set by the user (this map generator does not have C-evo’s
+pesky `(x*y)+1` must be prime issue).  Note that this may cause
+issues with the `Great_plains` and undocumented `Fjords` map; if using
+one of those map types, use the `map_size` parameter instead.
+
+The minimum `map_x` value is 23; the minimum `map_y` value is 36.
+If these values are not set, we use `map_size` to set the map size 
+instead.
+
 # Building this
 
 To build this:
