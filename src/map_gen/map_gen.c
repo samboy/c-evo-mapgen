@@ -739,13 +739,22 @@ static U16 plains_offsets [] = {
               break ;
         }
       }
+      /* Let the user add more oases as desired via map_oasis */
+      if(map_resources > 0 && (tile & BASIC_TILE_TYPE_MASK) == DESERT &&
+         (tile & BONUS_RESOURCE_1_MASK) == 0 &&
+         (tile & BONUS_RESOURCE_2_MASK) == 0 && map_oasis > 0 &&
+         (random_draw_range( 1,100 ) < map_oasis)) {
+          world [ tile_index ] = tile | BONUS_RESOURCE_1_MASK ;
+      }
       if(map_resources == 0) { col += 10 ; } else { col += 1 ; }
     }
     /*end column, next line*/
-    if (*program_p == 0) { /*end of program*/
-      program_p = program ; /*restart program from beginning*/
-    }
-    line += *program_p++ ;
+    if(map_resources == 0) {
+      if (*program_p == 0) { /*end of program*/
+        program_p = program ; /*restart program from beginning*/
+      }
+      line += *program_p++ ;
+    } else { line++; }
     col_offset = (col_offset + *program_p++) % 10 ;
   }
 
@@ -783,10 +792,12 @@ static U16 plains_offsets [] = {
       if(map_resources == 0) { col += 10 ; } else { col += 1 ; }
     }
     /*end column, next line*/
-    if (*program_p == 0) {
-      program_p = program ;
-    }
-    line += *program_p++ ;
+    if(map_resources == 0) {
+      if (*program_p == 0) { /*end of program*/
+        program_p = program ; /*restart program from beginning*/
+      }
+      line += *program_p++ ;
+    } else { line++; }
     col_offset = (col_offset + *program_p++) % 10 ;
   }
 
