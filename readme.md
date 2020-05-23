@@ -22,9 +22,9 @@ pesky `(x*y)+1` must be prime issue).  Note that this may cause
 issues with the `Great_plains` and undocumented `Fjords` map; if using
 one of those map types, use the `map_size` parameter instead.
 
-The minimum `map_x` value is 23; the minimum `map_y` value is 36.
-If these values are not set, we use `map_size` to set the map size 
-instead.
+The minimum `map_x` value is 23; the minimum `map_y` value is 34.
+If both of these values are not set, we use `map_size` to set the map 
+size instead.
 
 # Building this
 

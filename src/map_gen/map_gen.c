@@ -308,8 +308,7 @@ THIS_FUNC(main)
   }
 
   /* While map_size must be set, we can set the actual size by hand */
-  if(map_x > 22) { LX = map_x; }
-  if(map_y > 35) { LY = map_y; }
+  if(map_x > 22 && map_y > 33) { LX = map_x; LY= map_y; }
 
      /*allocate & initialize map*/
   cevo_lib_init() ;
