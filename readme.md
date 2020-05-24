@@ -35,7 +35,7 @@ resources.  `map_oasis` allows a second higher percentage of oasis
 squares to be added to deserts (if 0, `map_oasis` does not do anything).
 
 Note that, even if `map_resources` or `map_oasis` are set to 100, we
-do not allow adjacent tiles have resources.
+do not allow adjacent tiles to have resources.
 
 # Building this
 
