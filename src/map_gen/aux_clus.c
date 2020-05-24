@@ -151,12 +151,11 @@ char* _this_func = "add_clusters" ; /*for WORLD_FLAGS_ALLOC*/
       /*PRT_VAR((unsigned)ret_val,u)*/
     }
     if (tidx == INVALID_TIDX) {
-      ASSERT(params->task_str != NULL)
-      fprintf( log_fp, "%s: can add only %u start points\n",
+      fprintf( log_fp, "WARNING %s: can add only %u start points\n",
                        params->task_str, (unsigned)i ) ;
-      fprintf( stderr, "%s: can add only %u start points\n",
+      fprintf( stderr, "WARNING %s: can add only %u start points\n",
                        params->task_str, (unsigned)i ) ;
-      map_gen_exit() ;
+      break;
     }
     add_tile_to_cluster( tidx, params ) ;
     tiles_in_clusters++ ;

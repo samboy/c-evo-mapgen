@@ -309,6 +309,7 @@ THIS_FUNC(main)
 
   /* While map_size must be set, we can set the actual size by hand */
   if(map_x > 22 && map_y > 33) { LX = map_x; LY= map_y; }
+  LY=LY & 0xfe; /* Odd numbers for LY not allowed, as per map spec */
 
      /*allocate & initialize map*/
   cevo_lib_init() ;
@@ -654,6 +655,75 @@ THIS_FUNC(set_ocean_and_coast)
   }
 }
 
+/* Function added by Sam Trenholme
+   Given an (x,y) value, see if any bonus resources are in an adjacent
+   tile.  This is ugly because of the iso tiling. */
+U32 adjacent_resource(int x, int y) {
+	int a;
+	int offsetX, offsetY, viewX, viewY;
+  	U16 tile_index ;
+  	U32 tile ;
+	U32 out = 0;
+	for(a = 0; a < 8; a++) {
+		/* Handle the ISO tiling with a complex switch statement */
+		switch(a) {
+			case 0:
+				offsetX = 0; offsetY = -2;
+				break;
+			case 1:
+				if(y % 2 == 0) {
+				  offsetX = -1; offsetY = -1;
+				} else {
+				  offsetX = 0; offsetY = -1;
+				}
+				break;
+			case 2:
+				if(y % 2 == 0) {
+				  offsetX = 0; offsetY = -1;
+				} else {
+				  offsetX = 1; offsetY = -1;
+				}
+				break;
+			case 3:
+				offsetX = -1; offsetY = 0;
+				break;
+			case 4:
+				offsetX = 1; offsetY = 0;
+				break;
+			case 5:
+				if(y % 2 == 0) {
+				  offsetX = -1; offsetY = 1;
+				} else {
+				  offsetX = 0; offsetY = 1;
+				}
+				break;
+			case 6:
+				if(y % 2 == 0) {
+				  offsetX = 0; offsetY = 1;
+				} else {
+				  offsetX = 1; offsetY = 1;
+				}
+				break;
+			case 7:
+				offsetX = 0; offsetY = 2;
+				break;
+			default:
+				offsetX = 0; offsetY = 0;
+				break;
+		}
+		viewX = x + offsetX;
+		viewY = y + offsetY;
+		if(viewX < 0) { viewX += LX; }
+		if(viewX >= LX) { viewX -= LX; }
+		if(viewY < 0 || viewY >= LY) { continue; } /* Off the map */
+		tile_index = (viewY * LX) + viewX;
+		tile = world [ tile_index ];
+		tile &= (BONUS_RESOURCE_1_MASK | BONUS_RESOURCE_2_MASK);
+		out |= tile;	
+	}		
+	return out;
+}
+
 /*-------------------->   set_bonus_resources   <---------------- 2008-Apr-26
 This function adds bonus resources to the world map,
 including GRASSLAND to PLAINS conversion.
@@ -722,7 +792,8 @@ static U16 plains_offsets [] = {
       tile = world [ tile_index ] ;
       if(map_resources == 0 || ((random_draw_range( 1,100 ) < map_resources)
 	&& (tile & BONUS_RESOURCE_1_MASK) == 0  
-        && (tile & BONUS_RESOURCE_2_MASK) == 0)) {
+        && (tile & BONUS_RESOURCE_2_MASK) == 0
+	&& adjacent_resource(col,line) == 0)) {
         switch (tile & BASIC_TILE_TYPE_MASK) {
           case PRAIRIE:
           case DESERT:
@@ -743,6 +814,7 @@ static U16 plains_offsets [] = {
       if(map_resources > 0 && (tile & BASIC_TILE_TYPE_MASK) == DESERT &&
          (tile & BONUS_RESOURCE_1_MASK) == 0 &&
          (tile & BONUS_RESOURCE_2_MASK) == 0 && map_oasis > 0 &&
+	 adjacent_resource(col,line) == 0 &&
          (random_draw_range( 1,100 ) < map_oasis)) {
           world [ tile_index ] = tile | BONUS_RESOURCE_1_MASK ;
       }
@@ -769,7 +841,8 @@ static U16 plains_offsets [] = {
       tile = world [ tile_index ] ;
       if(map_resources == 0 || ((random_draw_range( 1,100 ) < map_resources)
 	&& (tile & BONUS_RESOURCE_1_MASK) == 0  
-        && (tile & BONUS_RESOURCE_2_MASK) == 0)) {
+        && (tile & BONUS_RESOURCE_2_MASK) == 0
+        && adjacent_resource(col,line) == 0)) {
           switch (tile & BASIC_TILE_TYPE_MASK) {
           case PRAIRIE:
           case DESERT:
