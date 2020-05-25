@@ -39,9 +39,10 @@ do not allow adjacent tiles to have resources.
 
 # seed2.txt
 
-If there is a file names `seed2.txt` in the same directory as 
+If there is a file named `seed2.txt` in the same directory as 
 `map_gen.exe`, this file will be read.  Any number in the file will
-be used to modify the seed used by map_gen.exe.
+be used to modify the seed used by map_gen.exe.  The file may also
+have comments, as long as no numerals are in the comments.
 
 To use this feature:
 
