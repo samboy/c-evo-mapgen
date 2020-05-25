@@ -256,7 +256,10 @@ THIS_FUNC(main)
 			seed2 += see - '0';
 		}
 	}
-  } 
+  } else {
+	seed2 = 777;
+  }
+  if(flag_count) { seed2 = 0; }
   seed = random_init( flag_count, count, seed2 ) ;
   fprintf( log_fp, "Seed value %llu\n", seed) ;
   fprintf( log_fp, "Seed2 value %llu (not used if 0)\n", seed2) ;

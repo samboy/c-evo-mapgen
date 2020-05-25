@@ -37,6 +37,22 @@ squares to be added to deserts (if 0, `map_oasis` does not do anything).
 Note that, even if `map_resources` or `map_oasis` are set to 100, we
 do not allow adjacent tiles to have resources.
 
+# seed2.txt
+
+If there is a file names `seed2.txt` in the same directory as 
+`map_gen.exe`, this file will be read.  Any number in the file will
+be used to modify the seed used by map_gen.exe.
+
+To use this feature:
+
+```bash
+echo 12345 > seed2.txt
+./map_gen
+```
+
+Note that seed2.txt is not used if we specify the seed on the command
+line.
+
 # Building this
 
 To build this:
