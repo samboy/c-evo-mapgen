@@ -102,6 +102,7 @@ Global objects:
 #include <getopts.h>
 #include <falloc.h>
 #include <now.h>
+#include <stdint.h>
 
 /*#define DEBUG*/
 #include <debug.h>
@@ -197,9 +198,9 @@ Exitcode:	x
 int main( int argc, char** argv )
 {
 THIS_FUNC(main)
-  unsigned int seed ;
+  uint64_t seed , seed2 ;
+  FILE *seeYear;
   U8 i ; /*loop control*/
-
 
   if (argc == 2) {
     if (strcmp( argv [1], "--version" ) == 0) {
@@ -244,8 +245,21 @@ THIS_FUNC(main)
                 (long)read_ini_checksum( ini_file_arg, VERSION_CNT )) ;
 
      /*init random generator*/
-  seed = random_init( flag_count, count ) ;
-  fprintf( log_fp, "Seed value 0x%04x=%u\n", (unsigned)seed, (unsigned)seed) ;
+  seed2 = 0;
+  seeYear = fopen("seed2.txt","r");
+  if(seeYear) {
+	int see;
+	while(!feof(seeYear)) {
+		see = getc(seeYear);
+		if(see >= '0' && see <= '9') {
+			seed2 *= 10;
+			seed2 += see - '0';
+		}
+	}
+  } 
+  seed = random_init( flag_count, count, seed2 ) ;
+  fprintf( log_fp, "Seed value %llu\n", seed) ;
+  fprintf( log_fp, "Seed2 value %llu (not used if 0)\n", seed2) ;
 
   fprintf( log_fp,
      "close/reopen log file to save seed in case of a segmentation fault\n" ) ;

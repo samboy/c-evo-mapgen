@@ -44,6 +44,7 @@ Global objects:
 
 #include <stdio.h>
 #include <time.h>
+#include <stdint.h>
 
 #ifdef __TINYC__
 # include <stdlib.h>
@@ -94,7 +95,6 @@ static uint32_t rg_belt[39], rg_mill[19], rg_phase = 2;
 // by hand.
 
 /* Tiny RadioGatun[32] implementation */
-#include <stdint.h> 
 #define rgp uint32_t
 #define rgf(a) for(c=0;c<a;c++)
 #define rgn w[c*13]^=s;u[16+c]^=s;
@@ -112,9 +112,24 @@ void rg(rgp*a,rgp*b){
 	*a^=1;
 }
 /* This converts a null-terminated string in to a rg32 state */
-void rgl(rgp*u,rgp*w,char*v){rgp s,q,c,x;rgf(39)w[c]=u[c%19]=0;for(
-;;rg(u,w)){rgf(3){for(s=q=0;q<4;){x=*v++;s|=(x?255&x:1)<<8*q++;if(!
-x){rgn;rgf(17)rg(u,w);return;}}rgn;}}}
+void rgl(rgp*u,rgp*w,char*v){
+	rgp s,q,c,x;
+	rgf(39)w[c]=u[c%19]=0;
+	for(;;rg(u,w)){
+		rgf(3){
+			for(s=q=0;q<4;){
+				x=*v++;
+				s|=(x?255&x:1)<<8*q++;
+				if(!x){
+					w[c*13]^=s;u[16+c]^=s;
+					rgf(17)rg(u,w);
+					return;
+				}
+			}
+		w[c*13]^=s;u[16+c]^=s;
+		}
+	}
+}
 /* This generates a random 32-bit unsigned integer */
 rgp rgi(rgp*m,rgp*b,rgp*a){if(*a&2)rg(m,b);return m[*a^=3];}
 
@@ -130,22 +145,31 @@ Parameters:	- seed: U16 seed value
 Return value:	The effective seed value
 Exitcode:	--
 ---------------------------------------------------------------------------*/
-unsigned int random_init( BIT use_seed, unsigned int seed )
+uint64_t random_init( BIT use_seed, uint64_t seed, uint64_t seed2 )
 {
 THIS_FUNC(random_init)
-  unsigned int effective_seed ;
+  uint64_t effective_seed ;
   U8 i ; /*loop control*/
-  char seed_string[24];
+  char seed_string[48];
 
   if (use_seed) {
     effective_seed = seed ;
   }
   else {
-    effective_seed = time( NULL ) & 0xfffffff ;
+    effective_seed = time( NULL );
   }
-  sprintf(seed_string,"%d",effective_seed);
+  if(seed2 > 0) {
+	/* sprintf does not allow multiple format strings.  Probably a 
+         * bug in this ancient version of mingw */
+  	char seed_append_string[48];
+  	sprintf(seed_string,"%lld,",seed2);
+	sprintf(seed_append_string,"%lld",effective_seed);
+	strncat(seed_string,seed_append_string,12);
+  } else {
+	sprintf(seed_string,"%lld",effective_seed);
+  }
   DEB((stderr, "Seed value %s\n",seed_string))
-  /*state = (U32)effective_seed ;*/ /*now seeding*/
+  /*printf("Seed value %s\n",seed_string);*/
   rgl(rg_mill,rg_belt,seed_string); // Init rg32 RNG
 
      /*warm up random generator*/
@@ -280,7 +304,7 @@ THIS_FUNC(main)
   if ( argc != 0 ) {
     usage() ;
   }
-  random_init( flag_count, (U16)count ) ;
+  random_init( flag_count, (U16)count, 0 ) ;
 
 
 /*---------  mean, variance, min, max  ------------------------------------*/
