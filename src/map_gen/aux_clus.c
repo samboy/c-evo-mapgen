@@ -13,6 +13,8 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with map_gen.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * This file has been modified by Sam Trenholme
  */
 /********************************************************** Ulrich Krueger **
 aux_clus.c
@@ -100,7 +102,7 @@ TIDX add_clusters( CLUSTER_PARAMS* params )
 THIS_FUNC(add_clusters)
 char* _this_func = "add_clusters" ; /*for WORLD_FLAGS_ALLOC*/
   TIDX tidx ;
-  TIDX ret_val ;
+  TIDX ret_val = INVALID_TIDX ;
   U16 i ; /*loop control*/
   U16 tiles_in_clusters = 0 ;
   U16 dist ; /*scratch pad for distance*/
@@ -155,7 +157,8 @@ char* _this_func = "add_clusters" ; /*for WORLD_FLAGS_ALLOC*/
                        params->task_str, (unsigned)i ) ;
       fprintf( stderr, "WARNING %s: can add only %u start points\n",
                        params->task_str, (unsigned)i ) ;
-      break;
+      WORLD_FLAGS_FREE( ADD_HERE_ALL )
+      return tidx;
     }
     add_tile_to_cluster( tidx, params ) ;
     tiles_in_clusters++ ;
