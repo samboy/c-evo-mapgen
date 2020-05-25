@@ -244,7 +244,7 @@ THIS_FUNC(main)
   fprintf( log_fp, "signature=0x%08lx\n",
                 (long)read_ini_checksum( ini_file_arg, VERSION_CNT )) ;
 
-     /*init random generator*/
+  /*init random generator*/
   seed2 = 0;
   seeYear = fopen("seed2.txt","r");
   if(seeYear) {
@@ -258,8 +258,8 @@ THIS_FUNC(main)
 	}
   } else {
 	seed2 = 777;
+        if(flag_count) { seed2 = 0; }
   }
-  if(flag_count) { seed2 = 0; }
   seed = random_init( flag_count, count, seed2 ) ;
   fprintf( log_fp, "Seed value %llu\n", seed) ;
   fprintf( log_fp, "Seed2 value %llu (not used if 0)\n", seed2) ;
