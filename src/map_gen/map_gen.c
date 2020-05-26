@@ -114,8 +114,8 @@ Global objects:
 
 /*--  constants  ----------------------------------------------------------*/
 
-#define VERSION_STR  "2020-05-25-2" /* Sam has changed the code */
-#define VERSION_CNT  103 /*release enumeration*/
+#define VERSION_STR  "2020-05-26" /* Sam has changed the code */
+#define VERSION_CNT  105 /*release enumeration*/
 
 #define DEFAULT_INI_FILE_NAME "map_gen.ini"
 #define DEFAULT_LOG_FILE_NAME "map_gen.log"
