@@ -103,6 +103,7 @@ Global objects:
 #include <falloc.h>
 #include <now.h>
 #include <stdint.h>
+#include <time.h>
 
 /*#define DEBUG*/
 #include <debug.h>
@@ -113,9 +114,8 @@ Global objects:
 
 /*--  constants  ----------------------------------------------------------*/
 
-/*#define VERSION_STR  "1.0"*/ /*for 1st release*/
-#define VERSION_STR  "1.1.0" /*for 2nd release*/
-#define VERSION_CNT  2 /*release enumeration*/
+#define VERSION_STR  "2020-05-25-2" /* Sam has changed the code */
+#define VERSION_CNT  103 /*release enumeration*/
 
 #define DEFAULT_INI_FILE_NAME "map_gen.ini"
 #define DEFAULT_LOG_FILE_NAME "map_gen.log"
@@ -1158,8 +1158,12 @@ void log_with_timestamp( char* msg )
 THIS_FUNC(log_with_timestamp)
   VERSATILE_TIME_STRUCT vts ;
 
-  now( & vts, NOW_ISO | NOW_NO_NEWLINE ) ;
-  fprintf( log_fp, "%s: %s\n", vts.output_string, msg ) ;
+  if(now( & vts, NOW_ISO | NOW_NO_NEWLINE ) == 1) {
+    fprintf( log_fp, "%s: %s\n", vts.output_string, msg ) ;
+  } else {
+    time_t n = time(NULL);
+    fprintf( log_fp, "Post-2038 timestamp %d: %s\n", n, msg);
+  }
 }
 
 /*-------------------->   x   <---------------------------------- 2017-Mar-24

@@ -196,7 +196,7 @@ Parameters:	- p pointer to current time
 Return value:	void
 Exitcode:	EXITCODE_WRONG_PARAM
 ---------------------------------------------------------------------------*/
-void now( VERSATILE_TIME_STRUCT* p, U8 format_flags )
+int now( VERSATILE_TIME_STRUCT* p, U8 format_flags )
 {
 THIS_FUNC(now)
   time_t now_now ;
@@ -206,7 +206,7 @@ THIS_FUNC(now)
   p->secs_since_1970 = now_now ;
 
      /*Step 2: set the other fields*/
-  set_vts_by_secs_since_1970( p, format_flags ) ;
+  return set_vts_by_secs_since_1970( p, format_flags ) ;
 }
 
 /*-------------------->   set_vts_by_secs_since_1970   <--------- 2013-Oct-11
@@ -225,7 +225,7 @@ Parameters:	- p: pointer to VERSATILE_TIME_STRUCT
 Return value:	void
 Exitcode:	EXITCODE_WRONG_PARAM
 ---------------------------------------------------------------------------*/
-void set_vts_by_secs_since_1970( VERSATILE_TIME_STRUCT* p, U8 format_flags )
+int set_vts_by_secs_since_1970( VERSATILE_TIME_STRUCT* p, U8 format_flags )
 {
 THIS_FUNC(set_vts_by_secs_since_1970)
   char* static_buf ;
@@ -235,10 +235,12 @@ THIS_FUNC(set_vts_by_secs_since_1970)
              /*ctime example: "Wed Jan 02 02:03:55 1980\n\0"*/
 
   if (static_buf == NULL) {
-    fprintf( stderr, "set_vts_by_secs_since_1970: date before 1980\n" ) ;
+    /* Let's not have this fail in 2038, thank you very much */
+    fprintf(stderr, "WARNING set_vts_by_secs_since_1970: date before 1980\n") ;
        /*if this should make a problem, replace "ctime" with
          an own function*/
-    exit( EXITCODE_WRONG_PARAM ) ;
+    /*exit( EXITCODE_WRONG_PARAM ) ;*/
+    return 0; /* Probably 2038 or later */
   }
   /*PRT_VAR(static_buf,s)*/
 
@@ -293,6 +295,7 @@ THIS_FUNC(set_vts_by_secs_since_1970)
   if ((format_flags & NOW_NO_NEWLINE) == 0) {
     strcat( p->output_string, "\n" ) ;
   }
+  return 1;
 }
 
 #ifndef MAIN

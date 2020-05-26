@@ -73,8 +73,8 @@ typedef struct {
 
 /*--  function prototypes  ------------------------------------------------*/
 
-void now( VERSATILE_TIME_STRUCT* p, U8 format_flags ) ;
-void set_vts_by_secs_since_1970( VERSATILE_TIME_STRUCT* p, U8 format_flags ) ;
+int now( VERSATILE_TIME_STRUCT* p, U8 format_flags ) ;
+int set_vts_by_secs_since_1970( VERSATILE_TIME_STRUCT* p, U8 format_flags ) ;
 
 /*--  macros  -------------------------------------------------------------*/
 

@@ -40,3 +40,6 @@ rm -f map_gen/map_gen.exe
 rm -f map_gen/bin/map_gen.exe
 rm -f map_gen/*.i
 rm -f map_gen/ri/*.i
+
+rm -f bin/*.cevo\ map
+rm -f bin/map_gen.log
