@@ -13,6 +13,8 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with map_gen.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * This code has been modified by Sam Trenholme to be semi-Y2038 compliant
  */
 /********************************************************** Ulrich Krueger **
 now.c
@@ -237,6 +239,10 @@ THIS_FUNC(set_vts_by_secs_since_1970)
   if (static_buf == NULL) {
     /* Let's not have this fail in 2038, thank you very much */
     fprintf(stderr, "WARNING set_vts_by_secs_since_1970: date before 1980\n") ;
+    fprintf(stderr, 
+"This is probably because we're running this after January 19, 2038\n" );
+    fprintf(stderr, 
+"Everything still runs, but logs will not have human-readable dates\n");
        /*if this should make a problem, replace "ctime" with
          an own function*/
     /*exit( EXITCODE_WRONG_PARAM ) ;*/
