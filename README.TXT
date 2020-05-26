@@ -49,6 +49,20 @@ To use this feature:
 	echo 12345 > seed2.txt
 	./map_gen
 
+# Year 2038 compliance ###################################################
+
+This program is year 2038 compliant.  Mostly.  After the January 19, 2038
+cutoff, this map generator will still happily make maps.  The maps will
+vary, but, depending on which OS it is being run on, the maps may or
+may not use a changing timestamp as part of the seed.  If the seed is
+not specified on the command line, we use a combination of the timestamp
+and 32 random bits to genrate a seed.  Even if the timestamp stops
+changing (as it will in Windows 10 after the 2038 cutoff), each map
+will still use a 32-bit random number as part of its seed.
+
+There will be some warnings when generating the maps, but the map
+generation will still work as before.
+
 # Building this ##########################################################
 
 To build this:

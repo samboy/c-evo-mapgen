@@ -199,6 +199,7 @@ int main( int argc, char** argv )
 {
 THIS_FUNC(main)
   uint64_t seed , seed2 ;
+  char seed_string[48];
   FILE *seeYear;
   U8 i ; /*loop control*/
 
@@ -257,12 +258,11 @@ THIS_FUNC(main)
 		}
 	}
   } else {
-	seed2 = 777;
+	seed2 = 0x777abacabULL;
         if(flag_count) { seed2 = 0; }
   }
-  seed = random_init( flag_count, count, seed2 ) ;
-  fprintf( log_fp, "Seed value %llu\n", seed) ;
-  fprintf( log_fp, "Seed2 value %llu (not used if 0)\n", seed2) ;
+  random_init( flag_count, count, seed2, seed_string ) ;
+  fprintf( log_fp, "Seed value %s\n", seed_string) ;
 
   fprintf( log_fp,
      "close/reopen log file to save seed in case of a segmentation fault\n" ) ;

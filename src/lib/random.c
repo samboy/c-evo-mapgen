@@ -30,7 +30,7 @@ History: (latest change first)
                  (even worse: with DLL-dependent behavior)
 *****************************************************************************
 Global objects:
-- U16 random_init( U16 seed )
+- U16 random_init( U16 seed ) CHANGED by Sam Trenholme to support more seeds
 - U16 random_draw( void )
 - U16 random_draw_range( U16 min, U16 max )
 ****************************************************************************/
@@ -45,6 +45,9 @@ Global objects:
 #include <stdio.h>
 #include <time.h>
 #include <stdint.h>
+/* The following two are non-UNIX, here for Y2038 reasons */
+#include <winsock.h>
+#include <wincrypt.h>
 
 #ifdef __TINYC__
 # include <stdlib.h>
@@ -145,38 +148,73 @@ Parameters:	- seed: U16 seed value
 Return value:	The effective seed value
 Exitcode:	--
 ---------------------------------------------------------------------------*/
-uint64_t random_init( BIT use_seed, uint64_t seed, uint64_t seed2 )
+void random_init( BIT use_seed, uint64_t seed, uint64_t seed2, char *s_str )
 {
 THIS_FUNC(random_init)
   uint64_t effective_seed ;
   U8 i ; /*loop control*/
-  char seed_string[48];
+  char seed_append_string[24];
+  unsigned char seed_stuff[8];
 
   if (use_seed) {
     effective_seed = seed ;
-  }
-  else {
-    effective_seed = time( NULL );
-  }
-  if(seed2 > 0) {
-	/* sprintf does not allow multiple format strings.  Probably a 
-         * bug in this ancient version of mingw */
-  	char seed_append_string[48];
-  	sprintf(seed_string,"%lld,",seed2);
-	sprintf(seed_append_string,"%lld",effective_seed);
-	strncat(seed_string,seed_append_string,12);
   } else {
-	sprintf(seed_string,"%lld",effective_seed);
+    effective_seed = time( NULL );
+    /* If compiling this on UNIX/Linux, delete the following lines.  The
+     * reason I have this is so seeds change after 2038 */
+    HCRYPTPROV CryptContext;
+    int q; 
+    q = CryptAcquireContext(&CryptContext, NULL, NULL, PROV_RSA_FULL,
+		CRYPT_VERIFYCONTEXT);
+    if(q == 1) {
+	q = CryptGenRandom(CryptContext, 5, seed_stuff);
+	int a;
+        for(a=0;a<4;a++) {
+		uint64_t n;
+		n = seed_stuff[a];
+		n = (uint64_t)n << (30 + (a * 8));
+        	effective_seed = (uint64_t)n ^ (uint64_t)effective_seed;
+	}
+    }
+    CryptReleaseContext(CryptContext,0);
+    /* END non-UNIX/Posix code */
   }
+  *s_str = 0;
+  *seed_append_string = 0;
+  /* Old mingw 32-bit has lousy 64-bit int support */
+  if(seed2 > 0) {
+	int b;
+	*seed_append_string = ',';
+	for(b=15;b>=0;b--) {
+		uint8_t c;
+		c = ((uint64_t)seed2 >> ((15 - b) * 4)) & 0xf;
+		if(c < 10) { seed_append_string[b + 1] = '0' + c; } else {
+			     seed_append_string[b + 1] = 87 + c; }
+	}
+	seed_append_string[17] = 0;
+  }
+  if(effective_seed > 0 && effective_seed < 1048576) {
+	sprintf(s_str,"%d",(int)effective_seed);
+  } else {
+	int b;
+	for(b=15;b>=0;b--) {
+		uint8_t c;
+		c = ((uint64_t)effective_seed >> ((15 - b) * 4)) & 0xf;
+		if(c < 10) { s_str[b] = '0' + c; } else {
+			     s_str[b] = 87 + c; }
+	}
+	s_str[16] = 0;
+  }	
+  strncat(s_str,seed_append_string,20);
   DEB((stderr, "Seed value %s\n",seed_string))
   /*printf("Seed value %s\n",seed_string);*/
-  rgl(rg_mill,rg_belt,seed_string); // Init rg32 RNG
+  rgl(rg_mill,rg_belt,s_str); // Init rg32 RNG
 
      /*warm up random generator*/
   for ( i = 0 ; i < WARM_UP_CYCLES ; i++ ) {
     random_draw() ;
   }
-  return effective_seed ;
+  return ;
 }
 
 /*-------------------->   random_draw   <------------------------ 2017-Mar-22
