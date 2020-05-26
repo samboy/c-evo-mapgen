@@ -1,4 +1,4 @@
-# Sam Trenholme's notes:
+# Sam Trenholme's notes ##################################################
 
 I have modified map_gen.exe to:
 
@@ -7,54 +7,49 @@ I have modified map_gen.exe to:
 
 Using the supplied map_gen.ini, running "./map_gen.exe -1"
 should generated a file, nav_req.cevo map, with the MD5
-sum of 7753c0263aabd4d304de6eb98d1e4cfa (as long as the file
-`seed2.txt` is not present).  example.png is an image of this map.
+sum of 7753c0263aabd4d304de6eb98d1e4cfa, as long as
+the file seed2.txt is not present.
 
 GPL compliance notes:
 
 As per the GPL: I, Sam Trenholme, have modified the source code.
 
-# map_x and map_y
+# map_x and map_y ########################################################
 
-I have added the variables `map_x` and `map_y` which allow the map size
+I have added the variables map_x and map_y which allow the map size
 to be set by the user (this map generator does not have C-evo’s
-pesky `(x*y)+1` must be prime issue).  Note that this may cause
-issues with the `Great_plains` and undocumented `Fjords` map; if using
-one of those map types, use the `map_size` parameter instead.
+pesky (x*y)+1 must be prime issue).  Note that this may cause
+issues with the Great_plains and undocumented Fjords map; if using
+one of those map types, use the map_size parameter instead.
 
-The minimum `map_x` value is 23; the minimum `map_y` value is 34.
-If both of these values are not set, we use `map_size` to set the map 
+The minimum map_x value is 23; the minimum map_y value is 34.
+If both of these values are not set, we use map_size to set the map 
 size instead.
 
-# map_resources and map_oasis
+# map_resources and map_oasis ############################################
 
-I have also added the parameters `map_resources` and `map_oasis`.
-`map_resources`, if 0, uses the old resource generation code.  If
+I have also added the parameters map_resources and map_oasis.
+map_resources, if 0, uses the old resource generation code.  If
 between 1 and 100, this is the percentage of squares with bonus
-resources.  `map_oasis` allows a second higher percentage of oasis
-squares to be added to deserts (if 0, `map_oasis` does not do anything).
+resources.  map_oasis allows a second higher percentage of oasis
+squares to be added to deserts (if 0, map_oasis does not do anything).
 
-Note that, even if `map_resources` or `map_oasis` are set to 100, we
+Note that, even if map_resources or map_oasis are set to 100, we
 do not allow adjacent tiles to have resources.
 
-# seed2.txt
+# seed2.txt ##############################################################
 
-If there is a file named `seed2.txt` in the same directory as 
-`map_gen.exe`, this file will be read.  Any number in the file will
+If there is a file named seed2.txt in the same directory as 
+map_gen.exe, this file will be read.  Any number in the file will
 be used to modify the seed used by map_gen.exe.  The file may also
 have comments, as long as no numerals are in the comments.
 
 To use this feature:
 
-```bash
-echo 12345 > seed2.txt
-./map_gen
-```
+	echo 12345 > seed2.txt
+	./map_gen
 
-Note that seed2.txt is not used if we specify the seed on the command
-line.
-
-# Building this
+# Building this ##########################################################
 
 To build this:
 
@@ -64,7 +59,7 @@ To build this:
 * The binary will build
 * The binary does not build in modern versions of Cygwin
 
-# Original readme
+# Original readme ########################################################
 
 Welcome to "map_gen" version 1.1.0, an external map generator
 for the turn based strategy game C-Evo.
@@ -136,7 +131,6 @@ from the sources.
 Map_gen 1.1.0 is distributed under the GNU General Public License (GPL).
 See file "gpl-3.0.txt" for details.
 
-```
     Copyright (C) 2017  Ulrich Krueger
 
     Map_gen is free software: you can redistribute it and/or modify
@@ -151,7 +145,6 @@ See file "gpl-3.0.txt" for details.
 
     You should have received a copy of the GNU General Public License
     along with map_gen.  If not, see <http://www.gnu.org/licenses/>.
-```
 
 ### Feedback
 
@@ -179,7 +172,5 @@ ulrich.krueger.2                   nonsense.stuff.here.to.fool.clever.address
                              t-online.de
 
 2017-Mar-31  Ulrich Krueger
-```
 
-(Modified to me a .md file by Sam Trenholme 2017-Apr-04)
 
