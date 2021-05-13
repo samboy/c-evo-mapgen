@@ -9,7 +9,7 @@
 # It's hard to both make a good small desert map and have the player start
 # near the center
 
-# This command is the compiled version of finsStarts.c
+# This command is the compiled version of findStarts.c
 FINDSTARTS="./findStarts"
 MAPGEN="./map_gen"
 
