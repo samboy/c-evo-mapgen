@@ -9,11 +9,12 @@
 
 int main(int argc, char **argv) {
 	int a;
-	int64_t lx = 0;
-	int64_t ly = 0;
-	int64_t x = 0;
-	int64_t y = 0;
-	int64_t tile, place;
+	int32_t lx = 0;
+	int32_t ly = 0;
+	int32_t x = 0;
+	int32_t y = 0;
+	int32_t place = 0;
+	int64_t tile;
 	float lat;
 	FILE *f;
 	if(argc == 2) {
