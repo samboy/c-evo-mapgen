@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-int main() {
+int main(int argc, char **argv) {
 	int a;
 	int64_t lx = 0;
 	int64_t ly = 0;
@@ -15,24 +15,34 @@ int main() {
 	int64_t y = 0;
 	int64_t tile, place;
 	float lat;
-	if(getc(stdin) != 'c') { puts("Not a C-Evo map"); return 1; }
-	if(getc(stdin) != 'E') { puts("Not a C-Evo map"); return 1; }
-	if(getc(stdin) != 'v') { puts("Not a C-Evo map"); return 1; }
-	if(getc(stdin) != 'o') { puts("Not a C-Evo map"); return 1; }
-	if(getc(stdin) != 'M') { puts("Not a C-Evo map"); return 1; }
-	if(getc(stdin) != 'a') { puts("Not a C-Evo map"); return 1; }
-	if(getc(stdin) != 'p') { puts("Not a C-Evo map"); return 1; }
-	for(place = 0; place < 5; place++) {
-		if(getc(stdin) != 0) { puts("Not a C-Evo map"); return 1; }
+	FILE *f;
+	if(argc == 2) {
+		f = fopen(argv[1],"rb");
+		if(f == NULL) {	
+			printf("Error opening file %s\n",argv[1]);
+			return 1;
+		}
+	} else {
+		f = stdin;
 	}
-	for(place = 0; place < 4; place++) { getc(stdin); } // MaxTurn
-	for(place = 0; place < 4; place++) { lx |= (getc(stdin) << 8*place); }
-	for(place = 0; place < 4; place++) { ly |= (getc(stdin) << 8*place); }
+	if(getc(f) != 'c') { puts("Not a C-Evo map"); return 1; }
+	if(getc(f) != 'E') { puts("Not a C-Evo map"); return 1; }
+	if(getc(f) != 'v') { puts("Not a C-Evo map"); return 1; }
+	if(getc(f) != 'o') { puts("Not a C-Evo map"); return 1; }
+	if(getc(f) != 'M') { puts("Not a C-Evo map"); return 1; }
+	if(getc(f) != 'a') { puts("Not a C-Evo map"); return 1; }
+	if(getc(f) != 'p') { puts("Not a C-Evo map"); return 1; }
+	for(place = 0; place < 5; place++) {
+		if(getc(f) != 0) { puts("Not a C-Evo map"); return 1; }
+	}
+	for(place = 0; place < 4; place++) { getc(f); } // MaxTurn
+	for(place = 0; place < 4; place++) { lx |= (getc(f) << 8*place); }
+	for(place = 0; place < 4; place++) { ly |= (getc(f) << 8*place); }
 	for(y = 0; y < ly; y++) {
 		for(x = 0; x < lx; x++) {
 			tile = 0;
 			for(place = 0; place < 4; place++) {
-				tile |= (getc(stdin) << 8*place); 
+				tile |= (getc(f) << 8*place); 
 			}
 			// We only care about player start
 			tile &= 0x00200000;

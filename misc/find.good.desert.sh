@@ -4,10 +4,24 @@
 # small desert map.  This requires a compiled copy of c-evo-mapgen and
 # a compiled copy of findStarts.c, with the name cEvo-findStarts
 
-# THIS SCRIPT WILL OVERWRITE map_gen.ini.  You have been warned.
+# Make sure to delete map_gen.ini *before* running this script
 
 # It's hard to both make a good small desert map and have the player start
 # near the center
+
+# This command is the compiled version of finsStarts.c
+FINDSTARTS="./findStarts"
+
+if [ ! -e "$FINDSTARTS" ] ; then
+	echo FindStarts not found\; compiling
+	cc -o ./findStarts findStarts.c
+	FINDSTARTS="./findStarts"
+fi
+
+if [ -e "map_gen.ini" ] ; then
+	echo map_gen.ini already exists\; will not override
+	exit 1
+fi
 
 cat > map_gen.ini << EOF
 [map_type]
@@ -51,8 +65,8 @@ while [ "$MAP" != "GOOD" ] ; do
 	echo Try number $TRY
 	TRY=$( expr $TRY + 1 )
 	if ./map_gen.exe > /dev/null 2>&1 ; then
-		cat "desert.cevo map" | cEvo-findStarts
-		MAP=$(cat "desert.cevo map" | cEvo-findStarts | awk '
+		$FINDSTARTS "desert.cevo map" 
+		MAP=$($FINDSTARTS "desert.cevo map" | awk '
 			{if($NF < 30){print "GOOD"}}')
 	fi
 done
