@@ -11,15 +11,28 @@
 
 # This command is the compiled version of finsStarts.c
 FINDSTARTS="./findStarts"
+MAPGEN="./map_gen"
+
+if [ ! -e "$MAPGEN" ] ; then
+	cp ../map_gen.exe .
+fi
+if [ ! -e "$MAPGEN" ] ; then
+	echo map_gen not found
+	exit 1
+fi
 
 if [ ! -e "$FINDSTARTS" ] ; then
 	echo FindStarts not found\; compiling
 	cc -o ./findStarts findStarts.c
 	FINDSTARTS="./findStarts"
 fi
+if [ ! -e "$FINDSTARTS" ] ; then
+	echo FindStaets not found
+	exit 1
+fi
 
 if [ -e "map_gen.ini" ] ; then
-	echo map_gen.ini already exists\; will not override
+	echo map_gen.ini already exists\; will not overwrite
 	exit 1
 fi
 
