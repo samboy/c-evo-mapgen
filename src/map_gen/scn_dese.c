@@ -13,6 +13,8 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with map_gen.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *  Modified by Sam Trenholme
  */
 /********************************************************** Ulrich Krueger **
 scn_dese.c
@@ -51,6 +53,8 @@ Global objects:
 #define DEFAULT_PRAIRIE_PERCENTAGE 1
 #define DEFAULT_PRAIRIE_MIN_SIZE 1
 #define DEFAULT_PRAIRIE_MAX_SIZE 6
+
+#define DEFAULT_LAND_AMOUNT 1
 
 
 /*--  type declarations & enums  ------------------------------------------*/
@@ -133,8 +137,9 @@ char* _this_func = "scenario_desert" ; /*for WORLD_FLAGS*/
   if ( ! found_prairie_max_size) {
     prairie_max_size = DEFAULT_PRAIRIE_MAX_SIZE ;
   }
-
-
+  if ( ! found_land_amount) {
+    land_amount = DEFAULT_LAND_AMOUNT ;
+  }
 
      /*set anchor points*/
   WORLD_FLAGS_ALLOC( TAGGED )
@@ -177,9 +182,10 @@ char* _this_func = "scenario_desert" ; /*for WORLD_FLAGS*/
   ....x...   ongoing3
   */
   /*ongoing = 0x0f ;*/
-  ongoing = 0x03 ;
+  ongoing = 2 << land_amount ;
+  ongoing -= 1 ;
   while (ongoing != 0x0) { /*at least one area is ongoing*/
-    for ( i = 0 ; i < 2 ; i++ ) {
+    for ( i = 0 ; i < 1 + land_amount ; i++ ) {
       i_mask = 1 << i ;
       if (ongoing & i_mask) { /*add one tile to area i*/
         if ( add_one_tile( i_mask )) {
@@ -472,7 +478,7 @@ static BIT add_one_tile( U8 add_here )
     return TRUE ;
   }
      /*add at "tile_index"*/
-  world [tile_index] = ((add_here == 1) ? DESERT : OCEAN) ;
+  world [tile_index] = ((add_here != 2) ? DESERT : OCEAN) ;
   world_flags [tile_index] |= 0xf0 ; /*add nothing more here*/
   /*tag_neighborhood_tiles( tile_index, add_here ) ;*/
   tag_adjacent_tiles( tile_index, add_here ) ;
