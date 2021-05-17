@@ -16,6 +16,7 @@
 #   You should have received a copy of the GNU General Public License
 #   along with map_gen.  If not, see <http://www.gnu.org/licenses/>.
 #
+#   This file has been modified by Sam Trenholme
 ###############################################################################
 # build  lib_scan.a library                                         2017-Feb-27
 #==============================================================================
