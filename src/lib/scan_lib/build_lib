@@ -43,7 +43,7 @@ CC_OPTIONS="${CC_WARNINGS} -c"
 
 CC_PATHES="-I ../../include"
 
-CC_CMD="cc ${CC_OPTIONS} ${CC_PATHES}"
+CC_CMD="gcc ${CC_OPTIONS} ${CC_PATHES}"
 LIB_CMD="ar -rs"
 
 
