@@ -156,6 +156,16 @@ char* _this_func = "scenario_desert" ; /*for WORLD_FLAGS*/
   fprintf( log_fp, "seed point 1: tile %lu\n",
                    (unsigned long)(anchor [1]) ) ;
   ASSERT(anchor [0] != anchor [1])
+  if(land_amount >= 2) {
+    anchor [2] = draw_on_flag_pattern_match( TAGGED, TAGGED ) ;
+    fprintf( log_fp, "seed point 2: tile %lu\n",
+                   (unsigned long)(anchor [2]) ) ;
+  } 
+  if(land_amount >= 3) {
+    anchor [3] = draw_on_flag_pattern_match( TAGGED, TAGGED ) ;
+    fprintf( log_fp, "seed point 3: tile %lu\n",
+                   (unsigned long)(anchor [3]) ) ;
+  } 
   WORLD_FLAGS_FREE( TAGGED )
   /*
   Flags used to shape the map:
@@ -170,7 +180,8 @@ char* _this_func = "scenario_desert" ; /*for WORLD_FLAGS*/
   */
   WORLD_FLAGS_ALLOC( 0xff )
   clear_flags(       0xff ) ;
-  for ( i = 0 ; i < 2 ; i++ ) { /*set ADD_HERE flags for anchor points*/
+  /*set ADD_HERE flags for anchor points*/
+  for ( i = 0 ; i < 1 + land_amount ; i++ ) { 
     world_flags [anchor [i]] |= (0x01 << i) ;
   }
 
