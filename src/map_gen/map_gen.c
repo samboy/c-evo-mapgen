@@ -13,6 +13,8 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with map_gen.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  Modified by Sam Trenholme
  */
 /********************************************************** Ulrich Krueger **
 map_gen.c
