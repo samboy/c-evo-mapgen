@@ -227,9 +227,11 @@ char* _this_func = "scenario_desert" ; /*for WORLD_FLAGS*/
       i_mask = 1 << i ;
       if (ongoing & i_mask) { /*add one tile to area i*/
         /* doOceanAdd hack: Less ocean at large land_amount values */
+        /* Don't always grow ocean */
         if ( (i_mask != 2 && (land_amount == 6 || land_amount == 7)) || 
              (i_mask != 1 && i_mask != 4 && land_amount > 7) || 
-             doOceanAdd == 1) { /* Don’t always grow ocean */
+             doOceanAdd == 1 || 
+             (land_amount == 7 && doOceanAdd == 2)) { 
           if ( add_one_tile( i_mask )) {
             ongoing &= ~i_mask ;
           }
