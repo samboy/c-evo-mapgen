@@ -166,6 +166,16 @@ char* _this_func = "scenario_desert" ; /*for WORLD_FLAGS*/
     fprintf( log_fp, "seed point 3: tile %lu\n",
                    (unsigned long)(anchor [3]) ) ;
   } 
+  if(land_amount >= 4) {
+    anchor [4] = draw_on_flag_pattern_match( TAGGED, TAGGED ) ;
+    fprintf( log_fp, "seed point 4: tile %lu\n",
+                   (unsigned long)(anchor [4]) ) ;
+  } 
+  if(land_amount >= 5) {
+    anchor [5] = draw_on_flag_pattern_match( TAGGED, TAGGED ) ;
+    fprintf( log_fp, "seed point 5: tile %lu\n",
+                   (unsigned long)(anchor [5]) ) ;
+  } 
   WORLD_FLAGS_FREE( TAGGED )
   /*
   Flags used to shape the map:
@@ -489,7 +499,8 @@ static BIT add_one_tile( U8 add_here )
     return TRUE ;
   }
      /*add at "tile_index"*/
-  world [tile_index] = ((add_here != 2) ? DESERT : OCEAN) ;
+  world [tile_index] = ((add_here != 2 && add_here != 16
+                         && add_here != 64) ? DESERT : OCEAN) ;
   world_flags [tile_index] |= 0xf0 ; /*add nothing more here*/
   /*tag_neighborhood_tiles( tile_index, add_here ) ;*/
   tag_adjacent_tiles( tile_index, add_here ) ;
