@@ -507,7 +507,7 @@ static BIT add_one_tile( U8 add_here )
   if(land_amount <= 3) {
     world [tile_index] = ((add_here != 2) ? DESERT : OCEAN) ;
   } else {
-    world [tile_index] = ((add_here != 2 && add_here != 4) ? DESERT : OCEAN) ;
+    world [tile_index] = ((add_here != 1 && add_here != 4) ? DESERT : OCEAN) ;
   }
   world_flags [tile_index] |= 0xf0 ; /*add nothing more here*/
   /*tag_neighborhood_tiles( tile_index, add_here ) ;*/
