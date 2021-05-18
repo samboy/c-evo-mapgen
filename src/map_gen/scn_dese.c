@@ -203,10 +203,15 @@ char* _this_func = "scenario_desert" ; /*for WORLD_FLAGS*/
   ....x...   ongoing3
   */
   /*ongoing = 0x0f ;*/
-  ongoing = 2 << land_amount ;
+  int lamount = land_amount;
+  if(lamount > 3) {
+    lamount = land_amount - 3;
+    lamount += 1;
+  }
+  ongoing = 2 << lamount;
   ongoing -= 1 ;
   while (ongoing != 0x0) { /*at least one area is ongoing*/
-    for ( i = 0 ; i < 1 + land_amount ; i++ ) {
+    for ( i = 0 ; i < 1 + lamount ; i++ ) {
       i_mask = 1 << i ;
       if (ongoing & i_mask) { /*add one tile to area i*/
         if ( add_one_tile( i_mask )) {
@@ -499,8 +504,11 @@ static BIT add_one_tile( U8 add_here )
     return TRUE ;
   }
      /*add at "tile_index"*/
-  world [tile_index] = ((add_here != 2 && add_here != 16
-                         && add_here != 64) ? DESERT : OCEAN) ;
+  if(land_amount <= 3) {
+    world [tile_index] = ((add_here != 2) ? DESERT : OCEAN) ;
+  } else {
+    world [tile_index] = ((add_here != 2 && add_here != 4) ? DESERT : OCEAN) ;
+  }
   world_flags [tile_index] |= 0xf0 ; /*add nothing more here*/
   /*tag_neighborhood_tiles( tile_index, add_here ) ;*/
   tag_adjacent_tiles( tile_index, add_here ) ;
