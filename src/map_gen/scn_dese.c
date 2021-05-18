@@ -180,10 +180,6 @@ char* _this_func = "scenario_desert" ; /*for WORLD_FLAGS*/
   */
   WORLD_FLAGS_ALLOC( 0xff )
   clear_flags(       0xff ) ;
-  /*set ADD_HERE flags for anchor points*/
-  for ( i = 0 ; i < 1 + land_amount ; i++ ) { 
-    world_flags [anchor [i]] |= (0x01 << i) ;
-  }
 
   /*
   'ongoing' flags:
@@ -195,6 +191,9 @@ char* _this_func = "scenario_desert" ; /*for WORLD_FLAGS*/
   /*ongoing = 0x0f ;*/
   int lamount = land_amount;
   int doOceanAdd = 1;
+  if(lamount > 7) {
+    lamount = 2;
+  }
   if(lamount > 5) {
     lamount = 1;
   }
@@ -202,11 +201,23 @@ char* _this_func = "scenario_desert" ; /*for WORLD_FLAGS*/
     lamount = land_amount - 3;
     lamount += 1;
   }
+
+  /*set ADD_HERE flags for anchor points; an "anchor point" is a seed from
+    which we grow land or ocean*/
+  for ( i = 0 ; i < 1 + lamount ; i++ ) { 
+    world_flags [anchor [i]] |= (0x01 << i) ;
+  }
+
   ongoing = 2 << lamount;
   ongoing -= 1 ;
   while (ongoing != 0x0) { /*at least one area is still growing tiles*/
     /* Let's reduce ocean size with land_amount > 5 */
-    if (land_amount > 5) {
+    if(land_amount > 7) { /* Multiple lakes/seas */
+      doOceanAdd ++;
+      if(doOceanAdd > land_amount - 6) {
+        doOceanAdd = 1;
+      }
+    } else if (land_amount > 5) { /* One ocean */
       doOceanAdd ++;
       if(doOceanAdd > land_amount - 4) {
         doOceanAdd = 1;
@@ -215,8 +226,10 @@ char* _this_func = "scenario_desert" ; /*for WORLD_FLAGS*/
     for ( i = 0 ; i < 1 + lamount ; i++ ) {
       i_mask = 1 << i ;
       if (ongoing & i_mask) { /*add one tile to area i*/
-        /* doOceanAdd hack only works when land_amount > 5 */
-        if ( i_mask != 2 || doOceanAdd == 1) { /* Don’t always grow ocean */
+        /* doOceanAdd hack: Less ocean at large land_amount values */
+        if ( (i_mask != 2 && (land_amount == 6 || land_amount == 7)) || 
+             (i_mask != 1 && i_mask != 4 && land_amount > 7) || 
+             doOceanAdd == 1) { /* Don’t always grow ocean */
           if ( add_one_tile( i_mask )) {
             ongoing &= ~i_mask ;
           }
@@ -508,7 +521,7 @@ static BIT add_one_tile( U8 add_here )
     return TRUE ;
   }
      /*add at "tile_index"*/
-  if(land_amount <= 3 || land_amount > 5) {
+  if(land_amount <= 3 || (land_amount == 6 || land_amount == 7)) {
     world [tile_index] = ((add_here != 2) ? DESERT : OCEAN) ;
   } else {
     world [tile_index] = ((add_here != 1 && add_here != 4) ? DESERT : OCEAN) ;
