@@ -166,16 +166,6 @@ char* _this_func = "scenario_desert" ; /*for WORLD_FLAGS*/
     fprintf( log_fp, "seed point 3: tile %lu\n",
                    (unsigned long)(anchor [3]) ) ;
   } 
-  if(land_amount >= 4) {
-    anchor [4] = draw_on_flag_pattern_match( TAGGED, TAGGED ) ;
-    fprintf( log_fp, "seed point 4: tile %lu\n",
-                   (unsigned long)(anchor [4]) ) ;
-  } 
-  if(land_amount >= 5) {
-    anchor [5] = draw_on_flag_pattern_match( TAGGED, TAGGED ) ;
-    fprintf( log_fp, "seed point 5: tile %lu\n",
-                   (unsigned long)(anchor [5]) ) ;
-  } 
   WORLD_FLAGS_FREE( TAGGED )
   /*
   Flags used to shape the map:
@@ -204,18 +194,32 @@ char* _this_func = "scenario_desert" ; /*for WORLD_FLAGS*/
   */
   /*ongoing = 0x0f ;*/
   int lamount = land_amount;
+  int doOceanAdd = 1;
+  if(lamount > 5) {
+    lamount = 1;
+  }
   if(lamount > 3) {
     lamount = land_amount - 3;
     lamount += 1;
   }
   ongoing = 2 << lamount;
   ongoing -= 1 ;
-  while (ongoing != 0x0) { /*at least one area is ongoing*/
+  while (ongoing != 0x0) { /*at least one area is still growing tiles*/
+    /* Let's reduce ocean size with land_amount > 5 */
+    if (land_amount > 5) {
+      doOceanAdd ++;
+      if(doOceanAdd > land_amount - 4) {
+        doOceanAdd = 1;
+      }
+    }
     for ( i = 0 ; i < 1 + lamount ; i++ ) {
       i_mask = 1 << i ;
       if (ongoing & i_mask) { /*add one tile to area i*/
-        if ( add_one_tile( i_mask )) {
-          ongoing &= ~i_mask ;
+        /* doOceanAdd hack only works when land_amount > 5 */
+        if ( i_mask != 2 || doOceanAdd == 1) { /* Don’t always grow ocean */
+          if ( add_one_tile( i_mask )) {
+            ongoing &= ~i_mask ;
+          }
         }
       }
     }
@@ -504,7 +508,7 @@ static BIT add_one_tile( U8 add_here )
     return TRUE ;
   }
      /*add at "tile_index"*/
-  if(land_amount <= 3) {
+  if(land_amount <= 3 || land_amount > 5) {
     world [tile_index] = ((add_here != 2) ? DESERT : OCEAN) ;
   } else {
     world [tile_index] = ((add_here != 1 && add_here != 4) ? DESERT : OCEAN) ;
