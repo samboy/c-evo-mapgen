@@ -1,4 +1,4 @@
-/* Donated to the public domain 2020 Sam Trenholme */
+/* Donated to the public domain 2020-2021 Sam Trenholme */
 
 /* This tool reads a C-Evo map file on the standard input.
  * On the standard output, it lists the size of the map and the location
