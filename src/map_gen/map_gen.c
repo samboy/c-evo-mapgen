@@ -116,7 +116,7 @@ Global objects:
 
 /*--  constants  ----------------------------------------------------------*/
 
-#define VERSION_STR  "2021-05-19" /* Sam has changed the code */
+#define VERSION_STR  "2021-05-20" /* Sam has changed the code */
 #define VERSION_CNT  105 /*release enumeration*/
 
 #define DEFAULT_INI_FILE_NAME "map_gen.ini"
@@ -175,6 +175,8 @@ static char flag_dont_append_to_log ;
 static char flag_ini_file ;
 static char* ini_file_arg = DEFAULT_INI_FILE_NAME ;
 static char flag_count ;
+static char flag_seed ;
+static char* seed_arg = "~" ;
 static unsigned long count ;
 
 OPTION_LIST(optlist)
@@ -182,7 +184,7 @@ OPTION_LIST(optlist)
 OPTION_WO_ARG('g',flag_no_copyright)
 OPTION_WO_ARG('a',flag_dont_append_to_log)
 OPTION_W_ARG('i',flag_ini_file,ini_file_arg)
-/*OPTION_W_ARG('s',flag_seed,seed_arg)*/
+OPTION_W_ARG('s',flag_seed,seed_arg)
 OPTION_NUMBER(flag_count,count)
 OPTION_LIST_END
 
@@ -201,7 +203,7 @@ int main( int argc, char** argv )
 {
 THIS_FUNC(main)
   uint64_t seed , seed2 ;
-  char seed_string[48];
+  char seed_string[242];
   FILE *seeYear;
   U8 i ; /*loop control*/
 
@@ -263,7 +265,7 @@ THIS_FUNC(main)
 	seed2 = 0x777abacabULL;
         if(flag_count) { seed2 = 0; }
   }
-  random_init( flag_count, count, seed2, seed_string ) ;
+  random_init( flag_count, count, seed2, seed_arg, seed_string ) ;
   fprintf( log_fp, "Seed value %s\n", seed_string) ;
 
   fprintf( log_fp,

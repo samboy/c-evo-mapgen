@@ -143,12 +143,15 @@ This function initializes the basic random generator.
 -----------------------------------------------------------------------------
 Used functions: time, random_draw
 Globals/Internals: state
-Parameters:	- seed: U16 seed value
+Parameters:	- seed: 64-bit seed value (seed2 also 64-bit)
+                - seed_arg: Seed if '-s some_seed' used
+                - s_str: 242-byte long string with final seed
 		- use_seed: If FALSE, a random value is used as seed
 Return value:	The effective seed value
 Exitcode:	--
 ---------------------------------------------------------------------------*/
-void random_init( BIT use_seed, uint64_t seed, uint64_t seed2, char *s_str )
+void random_init( BIT use_seed, uint64_t seed, uint64_t seed2, 
+                  char *seed_arg, char *s_str )
 {
 THIS_FUNC(random_init)
   uint64_t effective_seed ;
@@ -206,7 +209,26 @@ THIS_FUNC(random_init)
 	s_str[16] = 0;
   }	
   strncat(s_str,seed_append_string,20);
-  DEB((stderr, "Seed value %s\n",seed_string))
+
+  /* We can also specify a string with '-s some-string' or '-s 1234' */
+  if(seed_arg && 
+     (seed_arg[0] >= '0' && seed_arg[0] <= '9') ||
+     (seed_arg[0] >= 'a' && seed_arg[0] <= 'z')) { 
+    int a;
+    s_str[0] = '@';
+    for(a = 0; a < 230; a++) {
+      if((seed_arg[a] >= '0' && seed_arg[a] <= '9') ||
+         (seed_arg[a] >= 'a' && seed_arg[a] <= 'z') || seed_arg[a] == '-') { 
+        s_str[a + 1] = seed_arg[a];
+      } else {
+        s_str[a + 1] = 0;
+        break;
+      }
+    }
+    s_str[a + 1] = 0;
+  }
+
+  DEB((stderr, "Seed value %s\n",s_str))
   /*printf("Seed value %s\n",seed_string);*/
   rgl(rg_mill,rg_belt,s_str); // Init rg32 RNG
 
