@@ -22,6 +22,7 @@ map_gen.c
 This program generates a C-Evo-map file.
 *****************************************************************************
 History: (latest change first)
+2021-05-21: HOT FIX: Another Y2038 crash (map_gen.ini w/ post-Y2038 timestamp)
 2017-Mar-24: GNU copyright message and option -g
 2017-Feb-27: don't overwrite log file by default
 2017-Feb-18: debugging (segmentation fault)
@@ -106,6 +107,8 @@ Global objects:
 #include <now.h>
 #include <stdint.h>
 #include <time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 /*#define DEBUG*/
 #include <debug.h>
@@ -116,7 +119,7 @@ Global objects:
 
 /*--  constants  ----------------------------------------------------------*/
 
-#define VERSION_STR  "2021-05-20" /* Sam has changed the code */
+#define VERSION_STR  "2021-05-21" /* Sam has changed the code */
 #define VERSION_CNT  105 /*release enumeration*/
 
 #define DEFAULT_INI_FILE_NAME "map_gen.ini"
@@ -226,10 +229,19 @@ THIS_FUNC(main)
   }
   gnu_message() ;
 
+  /* This code crashes badly come Y2038 */
+  /*
   if ( ! file_sys_file_is_plain( ini_file_arg )) {
     fprintf( stderr, "map_gen: cannot find %s\n", ini_file_arg ) ;
     exit( EXITCODE_FILE_NOT_FOUND ) ;
   }
+  */
+  struct _stati64 buf;
+  if(_stati64(ini_file_arg, &buf) != 0) {
+    fprintf( stderr, "map_gen: cannot find %s\n", ini_file_arg ) ;
+    exit( EXITCODE_FILE_NOT_FOUND ) ;
+  }
+  // We probably should make sure it's a file, but nah....
 
   /*REDIRECT("map_gen.log")*/
   if (flag_dont_append_to_log) {
