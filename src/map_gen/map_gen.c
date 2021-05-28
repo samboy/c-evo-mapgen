@@ -119,7 +119,7 @@ Global objects:
 
 /*--  constants  ----------------------------------------------------------*/
 
-#define VERSION_STR  "2021-05-21" /* Sam has changed the code */
+#define VERSION_STR  "2021-05-27" /* Sam has changed the code */
 #define VERSION_CNT  105 /*release enumeration*/
 
 #define DEFAULT_INI_FILE_NAME "map_gen.ini"
@@ -179,6 +179,7 @@ static char flag_ini_file ;
 static char* ini_file_arg = DEFAULT_INI_FILE_NAME ;
 static char flag_count ;
 static char flag_seed ;
+static char flag_rg32_debug ;
 static char* seed_arg = "~" ;
 static unsigned long count ;
 
@@ -186,6 +187,7 @@ OPTION_LIST(optlist)
 /*OPTION_WO_ARG('x',flag_x)*/
 OPTION_WO_ARG('g',flag_no_copyright)
 OPTION_WO_ARG('a',flag_dont_append_to_log)
+OPTION_WO_ARG('r',flag_rg32_debug)
 OPTION_W_ARG('i',flag_ini_file,ini_file_arg)
 OPTION_W_ARG('s',flag_seed,seed_arg)
 OPTION_NUMBER(flag_count,count)
@@ -277,7 +279,30 @@ THIS_FUNC(main)
 	seed2 = 0x777abacabULL;
         if(flag_count) { seed2 = 0; }
   }
-  random_init( flag_count, count, seed2, seed_arg, seed_string ) ;
+  random_init( flag_count, count, seed2, seed_arg, seed_string, 
+               flag_rg32_debug ) ;
+  /* We pull 14 numbers from the random number generator to show the
+   * user if they use the '-r' flag.  Note: These will be altered versions
+   * of standard RadioGatun[32] test vectors.  It will be the low 16 bits
+   * of each 32-bit word, endian swapped, with the 16-bit value masked
+   * with 0x7fff (removing the high bit).  For example, with the seed '1',
+   * we will get 0e58 4368 etc. which is '896c580ef77a68c3' (the first 64
+   * bits of the RadioGatun[1] official test vector for "1") altered:
+   * 0x896c580e becomes 0e58 (last two bytes, swapped), and
+   * 0xf77a68c3 becomes 4368 (last two bytes, swapped, high bit gone)
+   */
+  if(flag_rg32_debug) {
+        U16 num, count;
+        for(count = 0; count < 14; count++) {
+             num = random_draw();
+             printf("%04x ",num);
+        }
+        puts("");
+        /* Have it so -r does not alter random maps */
+        for(count = 14; count < 100; count++) {
+             random_draw();
+        }
+  }
   fprintf( log_fp, "Seed value %s\n", seed_string) ;
 
   fprintf( log_fp,
@@ -426,6 +451,8 @@ static void usage( void )
 " -i filename   use filename as configuration file (default: %s)\n"
 " -a            overwrite log file \"%s\", do not append\n"
 " -g            suppress the GNU copyright message\n"
+" -s seed       Specify string seed; must have [a-z0-9][a-z0-9\\-]+ form\n"
+" -r            Debug: Show first few random numbers generated\n"
 " -number       a decimal positive number.  Serves as a seed value\n"
 "               for map generation.  For debugging purposes only.\n"
           ,DEFAULT_INI_FILE_NAME

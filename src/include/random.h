@@ -46,7 +46,7 @@ History: (latest change first)
 /*--  function prototypes  ------------------------------------------------*/
 
 void random_init( BIT use_seed, uint64_t seed, uint64_t seed2, 
-                  char *seed_arg, char *s_str ) ;
+                  char *seed_arg, char *s_str, char debug_mode ) ;
 U16 random_draw( void ) ; /*returns integer [0..RANDOM_MAX_RAND]*/
 U16 random_draw_range( U16 min, U16 max ) ;
 

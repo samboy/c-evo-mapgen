@@ -151,7 +151,7 @@ Return value:	The effective seed value
 Exitcode:	--
 ---------------------------------------------------------------------------*/
 void random_init( BIT use_seed, uint64_t seed, uint64_t seed2, 
-                  char *seed_arg, char *s_str )
+                  char *seed_arg, char *s_str , char debug_mode)
 {
 THIS_FUNC(random_init)
   uint64_t effective_seed ;
@@ -232,9 +232,11 @@ THIS_FUNC(random_init)
   /*printf("Seed value %s\n",seed_string);*/
   rgl(rg_mill,rg_belt,s_str); // Init rg32 RNG
 
-     /*warm up random generator*/
-  for ( i = 0 ; i < WARM_UP_CYCLES ; i++ ) {
-    random_draw() ;
+  /*warm up random generator*/
+  if(! debug_mode) {
+    for ( i = 0 ; i < WARM_UP_CYCLES ; i++ ) {
+      random_draw() ;
+    }
   }
   return ;
 }
